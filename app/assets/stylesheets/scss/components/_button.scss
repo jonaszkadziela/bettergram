@@ -1,6 +1,6 @@
 .btn-tooltip {
-  border-radius: $btn-border-radius + 0.05rem;
   @include transition($btn-transition);
+  border-radius: $btn-border-radius + 0.05rem;
 
   &:focus {
     outline: 0;
@@ -13,8 +13,8 @@
   }
 }
 
-@each $colorKey, $colorValue in $theme-colors {
-  .btn-tooltip-#{$colorKey} {
-    @include button-variant(transparent, $colorValue);
+@each $color, $value in $theme-colors {
+  .btn-tooltip-#{$color} {
+    @include button-variant(transparent, $value);
   }
 }

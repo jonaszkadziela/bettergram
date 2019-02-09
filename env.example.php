@@ -1,16 +1,21 @@
 <?php
-  require_once('config.php');
+  require_once 'config.php';
   if (basename($_SERVER['PHP_SELF']) === basename(__FILE__))
   {
-    $_SESSION['alert'] = '<strong>Błąd!</strong> Niewłaściwa metoda wywołania pliku!';
-    header('Location: ' . ROOT_URL);
+    header('Location: ' . ROOT_URL . '?error=405');
     exit();
   }
 
-  $database = [
-    'host' => '',
-    'user' => '',
-    'password' => '',
-    'name' => ''
+  $env =
+  [
+    'db' =>
+    [
+      'host' => '',
+      'user' => '',
+      'password' => '',
+      'name' => '',
+      'port' => 3306,
+      'socket' => false
+    ]
   ];
 ?>

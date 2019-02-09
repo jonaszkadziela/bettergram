@@ -1,26 +1,26 @@
 .navbar {
+  z-index: $zindex-navbar;
+
   .nav-item {
-    .nav-page {
-      &::after {
-        width: 80% !important;
-        height: 2px !important;
-        margin: 0 !important;
-
-        @include media-breakpoint-down(md) {
-          width: 100% !important;
-        }
-      }
-    }
-
     &.active {
       font-weight: 500;
 
-      .nav-page {
-        @extend .underline;
-        @extend .underline-primary;
+      .nav-page::after {
+        @extend .underline-animation:hover::after;
+      }
+    }
 
-        &::after {
-          @extend .underline-animation:hover::after;
+    .nav-page {
+      @extend .underline;
+      @extend .underline--narrow;
+      @extend .underline-animation;
+      @extend .underline-primary;
+      margin-bottom: 0.5rem;
+
+      &::after {
+        @include media-breakpoint-up(lg) {
+          left: calc(50% - 80% / 2) !important;
+          width: 80% !important;
         }
       }
     }

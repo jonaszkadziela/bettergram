@@ -1,109 +1,87 @@
 <?php
-  require_once(str_replace('\\', '/', dirname(__FILE__)) . '/../../../config.php');
+  require_once str_replace('\\', '/', __DIR__) . '/../../../config.php';
 
-  $title = isset($_POST['title']) ? $_POST['title'] : '';
-  $_SESSION['create_album_form_title'] = $title;
+  $title = isset($_POST['title']) ? $_POST['title'] : null;
+  $user_id = isset($_SESSION['current_user']['id']) ? $_SESSION['current_user']['id'] : null;
 
-  if (!validate_request('post', array(empty($_POST['title']), empty($_POST['user_id']))))
+  $_SESSION['create_album_form']['title'] = sanitize_text($title, false);
+
+  if (!validate_request('post', [$title, $user_id]))
   {
-    header('Location: ' . ROOT_URL . '?view=create_album');
+    header('Location: ' . get_referrer_url());
     exit();
   }
 
-  $user_id = $_POST['user_id'];
-  $errors = array();
+  $errors = [];
 
-  if (!preg_match("/^.{3,100}$/mu", $title))
+  if (!preg_match('/^.{3,100}$/m', $title))
   {
     $errors[] = 'Tytuł albumu musi posiadać od 3 do 100 znaków!';
   }
-  else if (!preg_match("/^[^\s].+[^\s]$/mu", $title))
+  else if (!preg_match('/^[\S].+[\S]$/m', $title))
   {
     $errors[] = 'Tytuł albumu nie może zaczynać ani kończyć się spacją!';
-  }
-  else if (!preg_match("/^[\p{L}\p{N}\p{P} ]{3,100}$/mu", $title))
-  {
-    $errors[] = 'Tytuł albumu nie może zawierać niedozwolonych znaków!';
   }
 
   if (count($errors) == 0)
   {
-    require(ROOT_PATH . 'env.php');
-
     try
     {
-      $connection = new mysqli($database['host'], $database['user'], $database['password'], $database['name']);
+      $date = (new DateTime())->format('Y-m-d H:i:s');
 
-      if ($connection->connect_errno != 0)
+      $db = Database::get_instance();
+      $db->prepared_query('INSERT INTO albums(id, title, date, user_id) VALUES(NULL, ?, ?, ?);', [$title, $date, $user_id]);
+
+      $album_id = $db->insert_id;
+      $folder_name = 'album_' . $album_id;
+      $target = CONTENT_PATH . 'albums/' . $folder_name;
+
+      if (!is_dir($target))
       {
-        throw new Exception($connection->connect_errno);
-      }
-
-      $connection->set_charset('utf8');
-
-      $title = htmlentities($title, ENT_QUOTES, 'UTF-8');
-      $date = date('Y-m-d H:i:s');
-
-      if ($connection->query("INSERT INTO albums VALUES (NULL, '$title', '$date', '$user_id')"))
-      {
-        $album_id = $connection->insert_id;
-        $folder_name = 'album_' . $album_id;
-        $target = CONTENT_PATH . '/albums/' . $folder_name;
-
-        if (!is_dir($target))
+        if (mkdir($target, 0700, true))
         {
-          if (mkdir($target, 0700, true))
-          {
-            unset($_SESSION['create_album_form_title']);
+          unset($_SESSION['create_album_form']);
 
-            header('Location: ' . ROOT_URL . '?view=create_photo');
-            exit();
-          }
-          else
-          {
-            $errors[] = 'Nie udało się utworzyć albumu!';
-          }
+          header('Location: ' . get_redirect_url());
+          exit();
         }
         else
         {
-          $errors[] = 'Istnieje już album o takim ID! Spróbuj jeszcze raz.';
-        }
-
-        if (count($errors) > 0)
-        {
-          if (!$connection->query("DELETE FROM albums WHERE id='$album_id'"))
-          {
-            throw new Exception($connection->errno);
-          }
+          $errors[] = 'Nie udało się utworzyć albumu!';
         }
       }
       else
       {
-        throw new Exception($connection->errno);
+        $errors[] = 'Istnieje już album o takim ID! Spróbuj jeszcze raz.';
       }
-      $connection->close();
+
+      if (count($errors) > 0)
+      {
+        $db->prepared_query('DELETE FROM albums WHERE id = ?;', [$album_id]);
+      }
     }
     catch (Exception $e)
     {
-      $_SESSION['alert'] =
-        '<h5 class="alert-heading">Wystąpił błąd #' . $e->getMessage() . '!</h5>' . PHP_EOL .
-        '<p class="mb-0">Nie udało się stworzyć albumu! Przepraszamy za niedogodności.</p>' . PHP_EOL;
-      header('Location: ' . ROOT_URL . '?view=create_album');
+      $_SESSION['alert'][] =
+        '<h5>Wystąpił błąd #' . $e->getmessage() . '!</h5>' . PHP_EOL .
+        '<p class="m-0">Nie udało się stworzyć albumu! Przepraszamy za niedogodności.</p>' . PHP_EOL;
+      header('Location: ' . get_referrer_url());
       exit();
     }
   }
 
   if (count($errors) > 0)
   {
-    $_SESSION['alert'] =
-      '<h5 class="alert-heading">Wystąpiły następujące błędy:</h5>' . PHP_EOL .
-      '<ul class="mb-0">' . PHP_EOL;
+    $alert =
+      '<h5>Wystąpiły następujące błędy:</h5>' . PHP_EOL .
+      '<ul class="mb-0 pl-1-25">' . PHP_EOL;
     for ($i = 0; $i < count($errors); $i++)
     {
-      $_SESSION['alert'] .= '<li>' . $errors[$i] . '</li>' . PHP_EOL;
+      $alert .= '<li>' . $errors[$i] . '</li>' . PHP_EOL;
     }
-    $_SESSION['alert'] .= '</ul>' . PHP_EOL;
-    header('Location: ' . ROOT_URL . '?view=create_album');
+    $alert .= '</ul>' . PHP_EOL;
+    $_SESSION['alert'][] = $alert;
+    header('Location: ' . get_referrer_url());
     exit();
   }
 ?>

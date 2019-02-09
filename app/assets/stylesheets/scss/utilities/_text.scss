@@ -1,5 +1,5 @@
-@each $weightKey, $weightValue in $font-weights {
-  .font-weight-#{$weightKey} {
-    font-weight: $weightValue !important;
+@each $weight, $value in $font-weights {
+  .font-weight-#{$weight} {
+    font-weight: $value !important;
   }
 }

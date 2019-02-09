@@ -1,29 +1,29 @@
 <?php
-  require_once(str_replace('\\', '/', dirname(__FILE__)) . '/../../../config.php');
+  require_once str_replace('\\', '/', __DIR__) . '/../../../config.php';
 
-  $login = isset($_POST['login']) ? $_POST['login'] : '';
-  $email = isset($_POST['email']) ? $_POST['email'] : '';
-  $password1 = isset($_POST['password1']) ? $_POST['password1'] : '';
-  $password2 = isset($_POST['password2']) ? $_POST['password2'] : '';
+  $login = isset($_POST['login']) ? $_POST['login'] : null;
+  $email = isset($_POST['email']) ? $_POST['email'] : null;
+  $password1 = isset($_POST['password1']) ? $_POST['password1'] : null;
+  $password2 = isset($_POST['password2']) ? $_POST['password2'] : null;
 
-  $_SESSION['sign_up_form_login'] = $login;
-  $_SESSION['sign_up_form_email'] = $email;
-  $_SESSION['sign_up_form_password1'] = $password1;
-  $_SESSION['sign_up_form_password2'] = $password2;
+  $_SESSION['create_user_form']['login'] = sanitize_text($login);
+  $_SESSION['create_user_form']['email'] = sanitize_text($email);
+  $_SESSION['create_user_form']['password1'] = sanitize_text($password1);
+  $_SESSION['create_user_form']['password2'] = sanitize_text($password2);
 
-  if (!validate_request('post', array(empty($_POST['login']), empty($_POST['email']), empty($_POST['password1']), empty($_POST['password2']))))
+  if (!validate_request('post', [$login, $email, $password1, $password2]))
   {
-    header('Location: ' . ROOT_URL . '?view=register');
+    header('Location: ' . get_referrer_url());
     exit();
   }
 
-  $errors = array();
+  $errors = [];
 
-  if (!preg_match("/^.{6,20}$/m", $login))
+  if (!preg_match('/^.{6,20}$/m', $login))
   {
     $errors[] = 'Login musi posiadać od 6 do 20 znaków!';
   }
-  else if (!preg_match("/^[a-zA-Z0-9]{6,20}$/m", $login))
+  else if (!preg_match('/^[a-zA-Z0-9]{6,20}$/m', $login))
   {
     $errors[] = 'Login może składać się tylko z liter i cyfr (bez polskich znaków)!';
   }
@@ -38,103 +38,82 @@
   {
     $errors[] = 'Podane hasła nie są identyczne!';
   }
-  else if (!preg_match("/^.{6,20}$/m", $password1))
+  else if (!preg_match('/^.{6,20}$/m', $password1))
   {
     $errors[] = 'Hasło musi posiadać od 6 do 20 znaków!';
   }
-  else if (!preg_match("/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9!@#$%^&*]{6,20}$/m", $password1))
+  else if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9!@#$%^&*]{6,20}$/m', $password1))
   {
     $errors[] = 'Hasło musi zawierać przynajmniej 1 dużą literę, 1 małą literę i 1 cyfrę!';
   }
 
   if (count($errors) == 0)
   {
-    require(ROOT_PATH . 'env.php');
-
     try
     {
-      $connection = new mysqli($database['host'], $database['user'], $database['password'], $database['name']);
+      $login = strtolower($login);
+      $email = strtolower($email);
 
-      if ($connection->connect_errno != 0)
-      {
-        throw new Exception($connection->connect_errno);
-      }
+      $db = Database::get_instance();
+      $result = $db->prepared_select_query('SELECT id FROM users WHERE email = ?;', [$email]);
 
-      $connection->set_charset('utf8');
-
-      $result = $connection->query("SELECT id FROM users WHERE email='$email'");
-      if (!$result)
-      {
-        throw new Exception($connection->errno);
-      }
-      if ($result->num_rows > 0)
+      if ($result && count($result) > 0)
       {
         $errors[] = 'Istnieje już konto przypisane do tego adresu email!';
       }
 
-      $result = $connection->query("SELECT id FROM users WHERE login='$login'");
-      if (!$result)
-      {
-        throw new Exception($connection->errno);
-      }
-      if ($result->num_rows > 0)
+      $result = $db->prepared_select_query('SELECT id FROM users WHERE login = ?;', [$login]);
+
+      if ($result && count($result) > 0)
       {
         $errors[] = 'Istnieje już użytkownik o takim loginie!';
       }
 
       if (count($errors) == 0)
       {
-        $login = strtolower($login);
-        $email = strtolower($email);
-        $password_hashed = md5($password1);
-        $date = date('Y-m-d');
+        $password = md5($password1);
+        $registration_date = (new DateTime())->format('Y-m-d');
         $permissions = 'użytkownik';
         $active = 1;
 
-        if ($connection->query("INSERT INTO users VALUES (NULL, '$login', '$email', '$password_hashed', '$date', '$permissions', '$active')"))
-        {
-          $_SESSION['user_id'] = $connection->insert_id;
-          $_SESSION['user_login'] = $login;
-          $_SESSION['user_email'] = $email;
-          $_SESSION['user_sign_up_date'] = $date;
-          $_SESSION['user_permissions'] = $permissions;
-          $_SESSION['user_active'] = $active;
-          $_SESSION['user_signed_in'] = true;
+        $db->prepared_query('INSERT INTO users(id, login, email, password, registration_date, permissions, active) VALUES (NULL, ?, ?, ?, ?, ?, ?);', [$login, $email, $password, $registration_date, $permissions, $active]);
 
-          $_SESSION['user_signed_up'] = true;
+        $_SESSION['current_user']['id'] = $db->insert_id;
+        $_SESSION['current_user']['login'] = $login;
+        $_SESSION['current_user']['email'] = $email;
+        $_SESSION['current_user']['registration_date'] = $registration_date;
+        $_SESSION['current_user']['permissions'] = $permissions;
+        $_SESSION['current_user']['active'] = $active;
+        $_SESSION['current_user']['logged_in'] = true;
+        $_SESSION['current_user']['registered'] = true;
+        unset($_SESSION['create_user_form']);
 
-          header('Location: ' . ROOT_URL . '?view=welcome');
-          exit();
-        }
-        else
-        {
-          throw new Exception($connection->errno);
-        }
-        $result->close();
-        $connection->close();
+        header('Location: ' . get_redirect_url());
+        exit();
       }
     }
     catch (Exception $e)
     {
-      $_SESSION['alert'] =
-        '<h5 class="alert-heading">Wystąpił błąd #' . $e->getMessage() . '!</h5>' . PHP_EOL .
-        '<p class="mb-0">Nie udało się stworzyć konta! Przepraszamy za niedogodności.</p>' . PHP_EOL;
-      header('Location: ' . ROOT_URL . '?view=register');
+      $_SESSION['alert'][] =
+        '<h5>Wystąpił błąd #' . $e->getmessage() . '!</h5>' . PHP_EOL .
+        '<p class="m-0">Nie udało się stworzyć konta! Przepraszamy za niedogodności.</p>' . PHP_EOL;
+      header('Location: ' . get_referrer_url());
       exit();
     }
   }
 
   if (count($errors) > 0)
   {
-    $_SESSION['alert'] =
-      '<h5 class="alert-heading">Wystąpiły następujące błędy:</h5>' . PHP_EOL .
-      '<ul class="mb-0">' . PHP_EOL;
+    $alert =
+      '<h5>Wystąpiły następujące błędy:</h5>' . PHP_EOL .
+      '<ul class="mb-0 pl-1-25">' . PHP_EOL;
     for ($i = 0; $i < count($errors); $i++)
     {
-      $_SESSION['alert'] .= '<li>' . $errors[$i] . '</li>' . PHP_EOL;
+      $alert .= '<li>' . $errors[$i] . '</li>' . PHP_EOL;
     }
-    $_SESSION['alert'] .= '</ul>' . PHP_EOL;
-    header('Location: ' . ROOT_URL . '?view=register');
+    $alert .= '</ul>' . PHP_EOL;
+    $_SESSION['alert'][] = $alert;
+    header('Location: ' . get_referrer_url());
     exit();
   }
 ?>

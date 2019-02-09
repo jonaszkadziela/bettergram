@@ -1,22 +1,22 @@
 .rating {
   user-select: none;
+}
 
-  &__star {
-    @include hover-focus-active {
-      cursor: pointer;
-    }
-
-    &-inner {
-      margin-top: -0.75px;
-      transition: all 0.15s ease-in-out;
-    }
-
-    &--selected {
-      color: #f4d10c;
-    }
-
-    &--hovered {
-      color: #e7ae0f;
-    }
+.rating__star {
+  @include hover-focus-active {
+    cursor: pointer;
   }
+
+  &--selected {
+    color: #f4d10c;
+  }
+
+  &--hovered {
+    color: #e7ae0f;
+  }
+}
+
+.rating__star-inner {
+  margin-top: -0.75px;
+  transition: all 0.15s ease-in-out;
 }

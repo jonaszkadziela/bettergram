@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 15, 2018 at 02:55 AM
+-- Generation Time: Feb 02, 2019 at 08:54 PM
 -- Server version: 10.1.30-MariaDB
 -- PHP Version: 7.2.2
 
@@ -58,6 +58,7 @@ CREATE TABLE `photos` (
 --
 
 CREATE TABLE `photos_comments` (
+  `id` int(11) NOT NULL,
   `comment` text COLLATE utf8_polish_ci NOT NULL,
   `date` datetime NOT NULL,
   `verified` tinyint(1) NOT NULL,
@@ -88,7 +89,7 @@ CREATE TABLE `users` (
   `login` varchar(20) COLLATE utf8_polish_ci NOT NULL,
   `email` varchar(128) COLLATE utf8_polish_ci NOT NULL,
   `password` varchar(32) COLLATE utf8_polish_ci NOT NULL,
-  `sign_up_date` date NOT NULL,
+  `registration_date` date NOT NULL,
   `permissions` enum('użytkownik','moderator','administrator') COLLATE utf8_polish_ci NOT NULL,
   `active` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
@@ -110,6 +111,18 @@ ALTER TABLE `photos`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `photos_comments`
+--
+ALTER TABLE `photos_comments`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `photos_ratings`
+--
+ALTER TABLE `photos_ratings`
+  ADD PRIMARY KEY (`photo_id`,`user_id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -129,6 +142,12 @@ ALTER TABLE `albums`
 -- AUTO_INCREMENT for table `photos`
 --
 ALTER TABLE `photos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `photos_comments`
+--
+ALTER TABLE `photos_comments`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --

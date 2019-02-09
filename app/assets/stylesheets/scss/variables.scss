@@ -2,24 +2,51 @@
 
 // Bootstrap variables
 
+$white: #fff;
+$gray-100: #f8f9fa;
+$gray-200: #e9ecef;
+$gray-300: #dee2e6;
+$gray-400: #ced4da;
+$gray-500: #adb5bd;
+$gray-600: #6c757d;
+$gray-700: #495057;
+$gray-800: #343a40;
+$gray-900: #212529;
+$black: #000;
+
+$blue: #007bff;
+$indigo: #6610f2;
+$purple: #6f42c1;
+$pink: #e83e8c;
+$red: #dc3545;
+$orange: #fd7e14;
+$yellow: #ffc107;
+$green: #28a745;
+$teal: #20c997;
+$cyan: #17a2b8;
+
 $primary: #e06f24;
 $secondary: #eeb71f;
 $danger: #d81212;
 $info: #2b9dfa;
 
-$theme-colors: (
+$colors: (
+  "white": $white,
+  "black": $black,
 );
 
 $sizes: (
+  "0": 0,
   "32px": 32px,
   "64px": 64px,
   "180px": 180px,
-  "800px": 800px
+  "800px": 800px,
 );
 
 $spacer: 1rem;
 
 $spacers: (
+  "-0-5": ($spacer * -0.5),
   "0-25": ($spacer * 0.25),
   "0-5": ($spacer * 0.5),
   "0-75": ($spacer * 0.75),
@@ -30,21 +57,42 @@ $spacers: (
   "2": ($spacer * 2),
   "3": ($spacer * 3),
   "4": ($spacer * 4),
-  "5": ($spacer * 5)
+  "5": ($spacer * 5),
 );
+
+// Variables for components
 
 $alert-bg-level: -1;
 $alert-border-level: 1;
 $alert-color-level: -12;
 
+$dropdown-link-color: $gray-600;
+$dropdown-link-hover-color: darken($gray-600, 20%);
+$dropdown-link-hover-bg: $gray-200;
+
+$nav-pills-color: $gray-600;
+$nav-pills-hover-color: darken($gray-600, 20%);
+$nav-pills-hover-bg: $gray-200;
+$nav-pills-border-radius: 0;
+
+$underline-width: 2em;
+
+$zindex-overlay: 980;
+$zindex-badge: 990;
+$zindex-navbar: 1080;
+$zindex-modal-backdrop: 1090;
+$zindex-modal: 1100;
+
 // Custom variables
+
+$body-min-width: 360px;
 
 $font-weights: (
   "light": 300,
   "normal": 400,
   "medium": 500,
   "bold": 700,
-  "bolder": 900
+  "bolder": 900,
 );
 
 $object-fits: (
@@ -52,5 +100,12 @@ $object-fits: (
   contain,
   cover,
   none,
-  scale-down
-)
+  scale-down,
+);
+
+$position-keys: (
+  top,
+  right,
+  bottom,
+  left,
+);

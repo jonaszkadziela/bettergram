@@ -1,3 +1,23 @@
+@each $color, $value in $colors {
+  @include bg-variant(".bg-#{$color}", $value);
+}
+
 .bg-img-1 {
   background: #ffffff url("../../images/backgrounds/bg-1.png") repeat !important;
+}
+
+.bg-position-center {
+  background-position: center !important;
+}
+
+.bg-size-cover {
+  background-size: cover !important;
+}
+
+.bg-size-contain {
+  background-size: contain !important;
+}
+
+.bg-repeat-no-repeat {
+  background-repeat: no-repeat !important;
 }

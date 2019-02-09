@@ -1,5 +1,9 @@
-.custom-file {
-  &-label {
-    white-space: nowrap;
+.custom-file-label {
+  white-space: nowrap;
+}
+
+.custom-control-label {
+  @include hover {
+    cursor: pointer;
   }
 }

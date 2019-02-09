@@ -1,45 +1,47 @@
 .underline {
-  display: inline-flex;
-  justify-content: center;
+  display: inline-block;
   position: relative;
+  padding-bottom: 0.5rem;
 
   &::after {
     content: "";
     position: absolute;
-    top: 100%;
-    width: 2em;
+    bottom: 0;
+    left: calc(50% - #{$underline-width} / 2);
+    width: $underline-width;
     height: 4px;
-    margin-top: 0.25rem;
     border-radius: 0.5rem;
     background-color: $black;
   }
 
   &--narrow {
+    padding-bottom: 0;
+
     &::after {
+      left: 0;
       width: 100%;
       height: 2px;
-      margin: 0;
-    }
-  }
-
-  &-animation {
-    &::after {
-      transform: scaleX(0);
-      transform-origin: bottom right;
-      transition: transform 0.25s ease-out;
-    }
-
-    &:hover::after {
-      transform: scaleX(1);
-      transform-origin: bottom left;
     }
   }
 }
 
-@each $colorKey, $colorValue in $theme-colors {
-  .underline-#{$colorKey} {
+.underline-animation {
+  &::after {
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.25s ease-out;
+  }
+
+  &:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+  }
+}
+
+@each $color, $value in $theme-colors {
+  .underline-#{$color} {
     &::after {
-      background-color: $colorValue !important;
+      background-color: $value !important;
     }
   }
 }

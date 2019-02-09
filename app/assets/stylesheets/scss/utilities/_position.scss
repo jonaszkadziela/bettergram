@@ -1,3 +1,9 @@
+@each $position in $position-keys {
+  .position-#{$position} {
+    #{$position}: 0 !important;
+  }
+}
+
 .position-top-right {
   top: 0 !important;
   right: 0 !important;

@@ -1,13 +1,15 @@
 body {
+  min-width: $body-min-width;
   font-size: $font-size-base;
   font-family: "Roboto", "Open Sans", "Helvetica", sans-serif;
 }
 
 a {
-  transition: all 0.15s ease-in-out;
   @include hover-focus-active {
     text-decoration: none;
   }
+
+  transition: all 0.15s ease-in-out;
 }
 
 ::selection {

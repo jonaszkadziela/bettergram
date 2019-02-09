@@ -1,0 +1,12 @@
+.nav-pills {
+  .nav-link {
+    color: $nav-pills-color;
+
+    &:not(.active) {
+      @include hover-focus {
+        @include gradient-bg($nav-pills-hover-bg);
+        color: $nav-pills-hover-color;
+      }
+    }
+  }
+}

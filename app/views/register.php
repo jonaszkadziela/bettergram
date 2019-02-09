@@ -1,22 +1,26 @@
 <?php
-  require_once('protect_views.php');
+  require_once(str_replace('\\', '/', dirname(__FILE__)) . '/../../config.php');
+  if (basename($_SERVER['PHP_SELF']) === basename(__FILE__))
+  {
+    $_SESSION['alert'] = '<strong>Błąd!</strong> Niewłaściwa metoda wywołania pliku!';
+    header('Location: ' . ROOT_URL);
+    exit();
+  }
 ?>
-<div class="d-flex flex-column h-100vh bg-1">
+<div class="d-flex flex-column h-100vh bg-img-1">
   <?php
-    $_SESSION['render_component'] = true;
-    include_once('app/components/navbar.php');
+    include_once(COMPONENTS_PATH . 'navbar.php');
   ?>
-  <div class="container d-flex flex-grow-1 flex-column h-100 my-5">
+  <div class="container d-flex flex-grow-1 flex-column h-100 my-3">
     <div class="row flex-grow-1">
-      <div class="col-md-8 m-auto">
+      <div class="col-lg-8 m-auto">
         <?php
-          $_SESSION['render_component'] = true;
-          include_once('app/components/alert.php');
+          include_once(COMPONENTS_PATH . 'alert.php');
         ?>
-        <div class="card p-3 shadow-lg">
+        <div class="card p-1 shadow-lg">
           <div class="card-body">
-            <h2 class="card-title font-weight-medium text-center">Zarejestruj się</h2>
-            <form action="app/backend/user/sign_up.php" method="post">
+            <h2 class="d-flex card-title underline underline-primary mb-1-75">Zarejestruj się</h2>
+            <form action="<?php echo BACKEND_URL . 'user/create.php' ?>" method="post">
               <div class="form-group">
                 <label for="login">Login</label>
                 <input id="login" class="form-control" name="login" type="text" placeholder="Login"<?php
@@ -60,12 +64,14 @@
                 ?>>
               </div>
               <div class="text-center">
-                <button id="sign_up_form_button" class="btn btn-lg btn-primary" type="submit" disabled>Zarejestruj</button>
+                <div class="d-inline-block btn-tooltip btn-tooltip-primary" tabindex="0" data-toggle="tooltip" title="Formularz jest niepoprawnie wypełniony!">
+                  <button id="sign_up_form_button" class="btn btn-lg btn-primary" tabindex="-1" type="submit" disabled>Zarejestruj</button>
+                </div>
               </div>
             </form>
-            <div class="mt-3 text-center">
+            <div class="mt-1-5 pt-0-5 text-center">
               <span class="card-text text-muted">Posiadasz już konto?</span>
-              <a class="card-link" href="index.php?page=login">Zaloguj się!</a>
+              <a class="underline underline--narrow underline-primary underline-animation" href="<?php echo ROOT_URL ?>?view=login">Zaloguj się!</a>
             </div>
           </div>
         </div>
@@ -73,9 +79,8 @@
     </div>
   </div>
   <?php
-    $_SESSION['render_component'] = true;
-    include_once('app/components/footer.php');
+    include_once(COMPONENTS_PATH . 'footer.php');
   ?>
 </div>
-<script src="<?php echo ASSETS_PATH . 'javascripts/validation.js' ?>"></script>
-<script src="<?php echo ASSETS_PATH . 'javascripts/validation_sign_up_form.js' ?>"></script>
+<script>loadScript("<?php echo ASSETS_URL . 'javascripts/validation.js' ?>");</script>
+<script>loadScript("<?php echo ASSETS_URL . 'javascripts/validation_create_user_form.js' ?>");</script>

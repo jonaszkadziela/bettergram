@@ -1,0 +1,10 @@
+.link {
+  &--clean {
+    color: $gray-600;
+
+    @include hover-focus-active {
+      color: darken($gray-600, 50%);
+      text-decoration: none;
+    }
+  }
+}

@@ -1,0 +1,12 @@
+$max-sizes: (
+  ("max-width", "mw"),
+  ("max-height", "mh")
+);
+
+@each $propKey, $propValue in $max-sizes {
+  @each $sizeKey, $sizeValue in $sizes {
+    .#{$propValue}-#{$sizeKey} {
+      #{$propKey}: $sizeValue !important;
+    }
+  }
+}

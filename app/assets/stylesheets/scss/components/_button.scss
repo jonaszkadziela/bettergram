@@ -1,0 +1,20 @@
+.btn-tooltip {
+  border-radius: $btn-border-radius + 0.05rem;
+  @include transition($btn-transition);
+
+  &:focus {
+    outline: 0;
+  }
+
+  .btn {
+    &:disabled {
+      pointer-events: none;
+    }
+  }
+}
+
+@each $colorKey, $colorValue in $theme-colors {
+  .btn-tooltip-#{$colorKey} {
+    @include button-variant(transparent, $colorValue);
+  }
+}

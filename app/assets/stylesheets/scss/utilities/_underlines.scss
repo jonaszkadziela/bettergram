@@ -1,0 +1,45 @@
+.underline {
+  display: inline-flex;
+  justify-content: center;
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    width: 2em;
+    height: 4px;
+    margin-top: 0.25rem;
+    border-radius: 0.5rem;
+    background-color: $black;
+  }
+
+  &--narrow {
+    &::after {
+      width: 100%;
+      height: 2px;
+      margin: 0;
+    }
+  }
+
+  &-animation {
+    &::after {
+      transform: scaleX(0);
+      transform-origin: bottom right;
+      transition: transform 0.25s ease-out;
+    }
+
+    &:hover::after {
+      transform: scaleX(1);
+      transform-origin: bottom left;
+    }
+  }
+}
+
+@each $colorKey, $colorValue in $theme-colors {
+  .underline-#{$colorKey} {
+    &::after {
+      background-color: $colorValue !important;
+    }
+  }
+}

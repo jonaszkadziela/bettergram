@@ -1,0 +1,5 @@
+@each $fit in $object-fits {
+  .object-fit-#{$fit} {
+    object-fit: $fit !important;
+  }
+}

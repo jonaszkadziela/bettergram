@@ -1,0 +1,28 @@
+.navbar {
+  .nav-item {
+    .nav-page {
+      &::after {
+        width: 80% !important;
+        height: 2px !important;
+        margin: 0 !important;
+
+        @include media-breakpoint-down(md) {
+          width: 100% !important;
+        }
+      }
+    }
+
+    &.active {
+      font-weight: 500;
+
+      .nav-page {
+        @extend .underline;
+        @extend .underline-primary;
+
+        &::after {
+          @extend .underline-animation:hover::after;
+        }
+      }
+    }
+  }
+}

@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.2
+-- version 4.7.7
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 29, 2018 at 08:27 AM
--- Server version: 10.1.34-MariaDB
--- PHP Version: 7.0.31
+-- Generation Time: Nov 15, 2018 at 02:55 AM
+-- Server version: 10.1.30-MariaDB
+-- PHP Version: 7.2.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -34,7 +34,7 @@ CREATE TABLE `albums` (
   `id` int(11) NOT NULL,
   `title` varchar(100) COLLATE utf8_polish_ci NOT NULL,
   `date` datetime NOT NULL,
-  `id_user` int(11) NOT NULL
+  `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 -- --------------------------------------------------------
@@ -46,9 +46,9 @@ CREATE TABLE `albums` (
 CREATE TABLE `photos` (
   `id` int(11) NOT NULL,
   `description` varchar(255) COLLATE utf8_polish_ci NOT NULL,
-  `id_album` int(11) NOT NULL,
   `date` datetime NOT NULL,
-  `verified` tinyint(1) NOT NULL
+  `verified` tinyint(1) NOT NULL,
+  `album_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 -- --------------------------------------------------------
@@ -58,11 +58,11 @@ CREATE TABLE `photos` (
 --
 
 CREATE TABLE `photos_comments` (
-  `id_photo` int(11) NOT NULL,
-  `id_user` int(11) NOT NULL,
-  `date` datetime NOT NULL,
   `comment` text COLLATE utf8_polish_ci NOT NULL,
-  `verified` tinyint(1) NOT NULL
+  `date` datetime NOT NULL,
+  `verified` tinyint(1) NOT NULL,
+  `photo_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 -- --------------------------------------------------------
@@ -72,9 +72,9 @@ CREATE TABLE `photos_comments` (
 --
 
 CREATE TABLE `photos_ratings` (
-  `id_photo` int(11) NOT NULL,
-  `id_user` int(11) NOT NULL,
-  `rating` tinyint(2) NOT NULL
+  `rating` tinyint(2) NOT NULL,
+  `photo_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 -- --------------------------------------------------------
@@ -86,8 +86,8 @@ CREATE TABLE `photos_ratings` (
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `login` varchar(20) COLLATE utf8_polish_ci NOT NULL,
-  `password` varchar(32) COLLATE utf8_polish_ci NOT NULL,
   `email` varchar(128) COLLATE utf8_polish_ci NOT NULL,
+  `password` varchar(32) COLLATE utf8_polish_ci NOT NULL,
   `sign_up_date` date NOT NULL,
   `permissions` enum('użytkownik','moderator','administrator') COLLATE utf8_polish_ci NOT NULL,
   `active` tinyint(1) NOT NULL

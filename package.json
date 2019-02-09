@@ -1,0 +1,11 @@
+{
+  "name": "bettergram",
+  "version": "1.0.0",
+  "description": "BetterGram is a simple yet powerful web application to share your photos with others.",
+  "author": "Jonasz Kądziela",
+  "private": true,
+  "main": "index.php",
+  "dependencies": {
+    "bootstrap": "^4.1.3"
+  }
+}

@@ -8,6 +8,10 @@
 
   $update_comment_form_errors = [];
 
+  if (empty($photo))
+  {
+    $update_comment_form_errors[] = 'Nie zdefiniowano zdjęcia!';
+  }
   if (empty($comment))
   {
     $update_comment_form_errors[] = 'Nie zdefiniowano komentarza!';
@@ -19,12 +23,41 @@
       '<div id="update_comment_form" class="text-center">' . PHP_EOL .
         '<h3 class="m-0">Zedytuj komentarz</h3>' . PHP_EOL .
         '<small class="d-block text-muted mb-1-5">(wypełnij tylko te pola, które chcesz zmodyfikować)</small>' . PHP_EOL .
+        '<a class="d-block link--clean w-180px mx-auto mb-1-5 mb-md-0" href="' . ROOT_URL . '?page=photo&photo_id=' . $photo->id . '">' . PHP_EOL .
+          '<div class="rounded">' . PHP_EOL;
+    include VIEWS_PATH . 'photos/render_photo_thumbnail.php';
+    echo
+          '</div>' . PHP_EOL .
+        '</a>' . PHP_EOL .
         '<form class="text-left" action="' . BACKEND_URL . 'comment/update.php" method="post">' . PHP_EOL .
           (isset($update_comment_form_mode) ? '<input type="hidden" name="mode" value="' . $update_comment_form_mode . '">' . PHP_EOL : '') .
-          '<input type="hidden" name="comment_id" value="' . $comment->id . '">' . PHP_EOL .
+          '<input type="hidden" name="comment_id" value="' . $comment->id . '">' . PHP_EOL;
+    if (!empty((string)$comment->author->email))
+    {
+      echo
+          '<div class="d-flex flex-column flex-md-row form-group p-0-5 mt-1-5 bg-white border rounded">' . PHP_EOL .
+            '<div class="js-spinner-container w-64px h-64px position-relative mx-auto mb-0-25 m-md-0">' . PHP_EOL .
+              '<div class="js-spinner d-flex justify-content-center align-items-center overlay text-light bg-dark rounded-circle">' . PHP_EOL .
+                '<i class="fas fa-spinner fa-2x fa-spin"></i>' . PHP_EOL .
+              '</div>' . PHP_EOL .
+              '<img class="w-100 h-100 border rounded-circle" src="#" data-src="' . get_gravatar_url($comment->author->email) . '" alt="#">' . PHP_EOL .
+            '</div>' . PHP_EOL .
+            '<div class="d-flex flex-column justify-content-center text-center text-md-left p-md-0-5">' . PHP_EOL .
+              '<p class="m-0">Ten komentarz został stworzony przez ' . $comment->author->login . '</p>' . PHP_EOL;
+      if (has_enough_permissions('administrator'))
+      {
+        echo
+              '<a class="underline underline--narrow underline-primary underline-animation align-self-center align-self-md-start" href="' .
+              ROOT_URL . '?page=admin_panel&tab=users&user_id=' . $comment->author->id . '">Zedytuj konto ' . $comment->author->login . '</a>' . PHP_EOL;
+      }
+      echo
+            '</div>' . PHP_EOL .
+          '</div>' . PHP_EOL;
+    }
+    echo
           '<div class="form-group">' . PHP_EOL .
             '<label for="comment">Komentarz</label>' . PHP_EOL .
-            '<textarea id="comment" class="form-control" name="comment" rows="3" placeholder="Komentarz"' .
+            '<textarea id="comment" class="js-expand-textarea form-control" name="comment" rows="3" data-min-rows="3" placeholder="Komentarz"' .
             (isset($update_comment_form_mode) && $update_comment_form_mode == 'privileged' && has_enough_permissions('administrator') ? '' : ' readonly') . '>' . PHP_EOL;
     if (isset($_SESSION['update_comment_form']['comment']))
     {
@@ -47,7 +80,7 @@
     if (!$comment->verified)
     {
       echo
-        '<button class="js-stop-propagation btn position-absolute position-top-right m-0-25 p-0-25" type="button" data-toggle="tooltip" data-html="true" ' .
+        '<button class="js-prevent-default btn btn--clean position-absolute position-top-right m-0-25 p-0-25" type="button" data-toggle="tooltip" data-html="true" data-trigger="manual" ' .
         'title="Ten komentarz nie został jeszcze zaakceptowany, dlatego <u>nie jest widoczny</u> publicznie.">' . PHP_EOL .
           '<i class="fas fa-question-circle fa-lg fa-fw"></i>' . PHP_EOL .
         '</button>' . PHP_EOL;
@@ -82,7 +115,7 @@
           '</div>' . PHP_EOL .
           '<div class="text-center">' . PHP_EOL .
             '<div class="d-inline-block btn-tooltip btn-tooltip-primary" tabindex="0" data-toggle="tooltip" title="Formularz jest niepoprawnie wypełniony!">' . PHP_EOL .
-              '<button id="submit" class="btn btn-primary" tabindex="-1" type="submit">Zapisz zmiany</button>' . PHP_EOL .
+              '<button class="btn btn-primary" tabindex="-1" type="submit">Zapisz zmiany</button>' . PHP_EOL .
             '</div>' . PHP_EOL .
           '</div>' . PHP_EOL .
         '</form>' . PHP_EOL .

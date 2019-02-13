@@ -98,7 +98,7 @@
     $text = trim($text);
     if (strlen($text) > $length)
     {
-      $text = wordwrap($text, $length);
+      $text = wordwrap($text, $length, "\n", true);
       $text = explode("\n", $text, 2);
       $text = $text[0] . $append;
     }
@@ -229,11 +229,57 @@
     {
       if (empty($request_params[$i]))
       {
-        $_SESSION['alert'][] =
-          '<h5>Błąd!</h5><p class="m-0">Niepoprawna ilość przesłanych parametrów!</p>' . PHP_EOL .
-          '<p class="m-0">Należy wypełnić wszystkie wymagane pola w formularzu.</p>' . PHP_EOL;
+        $_SESSION['alert'][] = '<h5>Błąd!</h5><p class="m-0">Należy wypełnić wszystkie wymagane pola w formularzu!</p>' . PHP_EOL;
         return false;
       }
+    }
+    return true;
+  }
+
+  /**
+   * Fetches the result of reCAPTCHA test
+   *
+   * @param string $token reCAPTCHA token
+   * @return array Returns an associative array of result
+   */
+  function get_recaptcha_response($token) : array
+  {
+    require ROOT_PATH . 'env.php';
+    $response = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=' . $env['recaptcha']['secret_key'] . '&response=' . $token);
+    return json_decode($response, true);
+  }
+
+  /**
+   * Checks if recaptcha verification was completed successfully
+   *
+   * @param string $recaptcha Value of reCAPTCHA field
+   * @param bool $silent When set to true no error message will be generated
+   * @return bool Returns true if recaptcha verification was completed successfully, otherwise returns false
+   */
+  function check_recaptcha($recaptcha, $silent = false) : bool
+  {
+    if (!RECAPTCHA_ENABLED)
+    {
+      return true;
+    }
+
+    if (empty($recaptcha))
+    {
+      if (!$silent)
+      {
+        $_SESSION['alert'][] = '<h5>Błąd!</h5> Nie przesłano tokenu niezbędnego do weryfikacji reCAPTCHA!';
+      }
+      return false;
+    }
+
+    $response = get_recaptcha_response($recaptcha);
+    if (!$response['success'] || $response['score'] < RECAPTCHA_SCORE_THRESHOLD)
+    {
+      if (!$silent)
+      {
+        $_SESSION['alert'][] = '<h5>Błąd!</h5> Weryfikacja reCAPTCHA zakończona niepowodzeniem! Spróbuj ponownie później.';
+      }
+      return false;
     }
     return true;
   }
@@ -547,5 +593,24 @@
       default:
         return $charset;
     }
+  }
+
+  /**
+   * Fetches gravatar for a given email address
+   *
+   * @see https://en.gravatar.com/site/implement/images/
+   * @param string $email Email address linked to the gravatar
+   * @param int $size Avatar size (width and height) in pixels
+   * @param string $rating Decency rating of avatar
+   * @param string $default Specify default image when gavatar was not found
+   * @return string Returns URL to the gravatar
+   */
+  function get_gravatar_url($email, $size = 64, $rating = 'pg', $default = null) : string
+  {
+    $default = is_null($default) ? GRAVATAR_DEFAULT_IMAGE : $default;
+    $email = empty($email) ? '' : md5(strtolower(trim($email)));
+    $gravatar_url = "https://www.gravatar.com/avatar/$email?s=$size&r=$rating&d=$default";
+
+    return $gravatar_url;
   }
 ?>

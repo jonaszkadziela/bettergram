@@ -7,6 +7,7 @@
   $mode = isset($_POST['mode']) ? $_POST['mode'] : null;
   $photo_id = isset($_POST['photo_id']) ? $_POST['photo_id'] : null;
   $user_id = isset($_SESSION['current_user']['id']) ? $_SESSION['current_user']['id'] : null;
+  $recaptcha = isset($_POST['recaptcha']) ? $_POST['recaptcha'] : null;
 
   $mode = filter_var($mode, FILTER_SANITIZE_STRING);
 
@@ -64,6 +65,12 @@
 
       if (count($errors) == 0)
       {
+        if (!check_recaptcha($recaptcha))
+        {
+          header('Location: ' . get_referrer_url());
+          exit();
+        }
+
         if (filter_var($delete_photo, FILTER_VALIDATE_BOOLEAN))
         {
           $db->prepared_query('DELETE FROM photos WHERE id = ?;', [$photo_id]);

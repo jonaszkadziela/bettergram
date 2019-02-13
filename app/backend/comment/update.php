@@ -7,6 +7,7 @@
   $mode = isset($_POST['mode']) ? $_POST['mode'] : null;
   $comment_id = isset($_POST['comment_id']) ? $_POST['comment_id'] : null;
   $user_id = isset($_SESSION['current_user']['id']) ? $_SESSION['current_user']['id'] : null;
+  $recaptcha = isset($_POST['recaptcha']) ? $_POST['recaptcha'] : null;
 
   $mode = filter_var($mode, FILTER_SANITIZE_STRING);
 
@@ -62,6 +63,12 @@
 
       if (count($errors) == 0)
       {
+        if (!check_recaptcha($recaptcha))
+        {
+          header('Location: ' . get_referrer_url());
+          exit();
+        }
+
         if (filter_var($delete_comment, FILTER_VALIDATE_BOOLEAN))
         {
           $db->prepared_query('DELETE FROM photos_comments WHERE id = ?;', [$comment_id]);
@@ -84,9 +91,9 @@
             }
             if (count($errors) == 0)
             {
-              if (!preg_match('/^.{1,500}$/m', $comment))
+              if (!preg_match('/^.{1,1000}$/m', $comment))
               {
-                $errors[] = 'Komentarz musi posiadać od 1 do 500 znaków!';
+                $errors[] = 'Komentarz musi posiadać od 1 do 1000 znaków!';
               }
               else if (!preg_match('/^(?=.*[^\s]).+$/m', $comment))
               {

@@ -40,35 +40,36 @@
       }
     }
 
+    $users_class = isset($users_class) ? $users_class : 'mt-1';
     $users_link = isset($users_link) ? $users_link : null;
+    $users_badge_content = isset($users_badge_content) ? $users_badge_content : null;
 
     echo '<div class="row justify-content-center">' . PHP_EOL;
     for ($i = 0; $i < count($users); $i++)
     {
       $user = $users[$i];
-      echo '<div class="col-xs-12 col-md-6">' . PHP_EOL;
+      echo '<div class="col-xs-12 col-md-6 ' . $users_class . '">' . PHP_EOL;
 
       if (!empty($users_link))
       {
-        echo '<a class="d-block link--float" href="' . $users_link . '&user_id=' . $user->id . '">' . PHP_EOL;
+        echo '<a class="d-block link--float rounded" href="' . $users_link . '&user_id=' . $user->id . '">' . PHP_EOL;
       }
-      if (!is_null($users_badge_content))
+      switch ($users_badge_content)
       {
-        switch ($users_badge_content)
-        {
-          case 'inactive':
-            if ($user->active == 0)
-            {
-              $user_badge = 'Nieaktywny';
-            }
-            else
-            {
-              unset($user_badge);
-            }
-          break;
-        }
+        case 'inactive':
+          if ($user->active == 0)
+          {
+            $user_badge = 'Nieaktywny';
+          }
+          else
+          {
+            unset($user_badge);
+          }
+        break;
       }
+
       include VIEWS_PATH . 'users/render_user.php';
+
       if (!empty($users_link))
       {
         echo '</a>' . PHP_EOL;

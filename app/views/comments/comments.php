@@ -41,20 +41,43 @@
     }
 
     $comments_link = isset($comments_link) ? $comments_link : null;
+    $comments_thumbnail = isset($comments_thumbnail) ? $comments_thumbnail : null;
 
     for ($i = 0; $i < count($comments); $i++)
     {
       $comment = $comments[$i];
+      echo '<div class="mt-1">' . PHP_EOL;
 
       if (!empty($comments_link))
       {
-        echo '<a class="d-block link--float" href="' . $comments_link . '&comment_id=' . $comment->id . '">' . PHP_EOL;
+        echo '<a class="d-block link--float rounded" href="' . $comments_link . '&comment_id=' . $comment->id . '">' . PHP_EOL;
       }
+      if (!empty($comments_thumbnail))
+      {
+        $photo = $comment->photo;
+        $photo_container_class = 'card w-100 w-md-180px min-h-180px h-100 border-0 rounded-inherit';
+        $comment_container_class = 'media h-100 position-relative align-items-center rounded p-1';
+        echo
+          '<div class="card flex-md-row">' . PHP_EOL .
+            '<div class="border-bottom border-md-0 border-right-md rounded-top rounded-md-0 rounded-left-md">' . PHP_EOL;
+        include VIEWS_PATH . 'photos/render_photo_thumbnail.php';
+        echo '</div>' . PHP_EOL;
+        echo '<div class="align-items-center w-100">' . PHP_EOL;
+      }
+
       include VIEWS_PATH . 'comments/render_comment.php';
+
+      if (!empty($comments_thumbnail))
+      {
+        echo
+            '</div>' . PHP_EOL .
+          '</div>' . PHP_EOL;
+      }
       if (!empty($comments_link))
       {
         echo '</a>' . PHP_EOL;
       }
+      echo '</div>' . PHP_EOL;
     }
 
     if (isset($page_count))

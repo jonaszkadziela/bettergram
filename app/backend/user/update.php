@@ -11,12 +11,13 @@
   $mode = isset($_POST['mode']) ? $_POST['mode'] : null;
   $user_id = isset($_POST['user_id']) ? $_POST['user_id'] : null;
   $current_user_id = isset($_SESSION['current_user']['id']) ? $_SESSION['current_user']['id'] : null;
+  $recaptcha = isset($_POST['recaptcha']) ? $_POST['recaptcha'] : null;
 
   $_SESSION['update_user_form']['email'] = sanitize_text($email);
 
   $required_params = $mode == 'privileged' ? [$current_user_id] : [$current_password, $current_user_id];
 
-  if (!validate_request('post', $required_params))
+  if (!validate_request('post', $required_params, $recaptcha))
   {
     header('Location: ' . get_referrer_url());
     exit();
@@ -63,7 +64,7 @@
       }
       if (is_null($mode))
       {
-        if (md5($current_password) != $result[0]['user_password'])
+        if (!password_verify($current_password, $result[0]['user_password']))
         {
           $errors[] = 'Wprowadzone aktualne hasło jest nieprawidłowe!';
         }
@@ -76,6 +77,12 @@
 
     if (count($errors) == 0)
     {
+      if (!check_recaptcha($recaptcha))
+      {
+        header('Location: ' . get_referrer_url());
+        exit();
+      }
+
       if (filter_var($delete_user, FILTER_VALIDATE_BOOLEAN))
       {
         $query =
@@ -177,7 +184,7 @@
           {
             $errors[] = 'Podane nowe hasła nie są identyczne!';
           }
-          else if (md5($password1) == $current_password)
+          else if ($password1 == $current_password)
           {
             $errors[] = 'Nowe hasło musi się różnić od aktualnego hasła!';
           }
@@ -191,7 +198,7 @@
           }
           else
           {
-            $fields['password'] = md5($password1);
+            $fields['password'] = password_hash($password1, PASSWORD_DEFAULT);
           }
         }
         if (!is_null($permissions))

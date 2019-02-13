@@ -96,15 +96,15 @@
       }
     }
 
-    $show = isset($_GET['show']) ? $_GET['show'] : 'all_albums';
-    switch ($show)
+    $filter = isset($_GET['filter']) ? $_GET['filter'] : 'all_albums';
+    switch ($filter)
     {
       case 'all_albums':
       case 'unverified_photos':
       break;
 
       default:
-        header('Location: ' . ROOT_URL . modify_get_parameters(['show' => 'all_albums']));
+        header('Location: ' . ROOT_URL . modify_get_parameters(['filter' => 'all_albums']));
         exit();
     }
 
@@ -114,19 +114,19 @@
         '<div class="rounded border bg-light my-1-5 p-1">' . PHP_EOL .
           '<div class="row">' . PHP_EOL .
             '<div class="col-12 col-md-auto d-flex flex-column justify-content-center px-md-0-5 ml-auto">' . PHP_EOL .
-              '<label class="m-md-0" for="select_show">Wyświetl</label>' . PHP_EOL .
+              '<label class="m-md-0" for="select_filter">Wyświetl</label>' . PHP_EOL .
             '</div>' . PHP_EOL .
             '<div class="col-12 col-md-6 px-md-0-5 mr-auto">' . PHP_EOL .
-              '<select id="select_show" class="js-select-links custom-select">' . PHP_EOL .
-                '<option value="' . ROOT_URL . modify_get_parameters(['show' => 'all_albums']) . '"' . ($show == 'all_albums' ? ' selected' : '') . '>Wszystkie albumy</option>' . PHP_EOL .
-                '<option value="' . ROOT_URL . modify_get_parameters(['show' => 'unverified_photos']) . '"' . ($show == 'unverified_photos' ? ' selected' : '') . '>Niezaakceptowane zdjęcia</option>' . PHP_EOL .
+              '<select id="select_filter" class="js-select-links custom-select">' . PHP_EOL .
+                '<option value="' . ROOT_URL . modify_get_parameters(['filter' => 'all_albums']) . '"' . ($filter == 'all_albums' ? ' selected' : '') . '>Wszystkie albumy</option>' . PHP_EOL .
+                '<option value="' . ROOT_URL . modify_get_parameters(['filter' => 'unverified_photos']) . '"' . ($filter == 'unverified_photos' ? ' selected' : '') . '>Niezaakceptowane zdjęcia</option>' . PHP_EOL .
               '</select>' . PHP_EOL .
             '</div>' . PHP_EOL .
           '</div>' . PHP_EOL .
         '</div>' . PHP_EOL;
     }
 
-    if ($show == 'all_albums')
+    if ($filter == 'all_albums')
     {
       if (empty($album_id))
       {
@@ -237,12 +237,18 @@
             'SELECT
               p.id AS photo_id,
               p.description AS photo_description,
-              p.verified AS photo_verified
+              p.verified AS photo_verified,
+              u.id AS user_id,
+              u.login AS user_login,
+              u.email AS user_email
             FROM
               albums AS a
             JOIN photos AS p
             ON
               a.id = p.album_id
+            JOIN users AS u
+            ON
+              a.user_id = u.id
             WHERE
               a.id = ? AND p.id = ?;';
           $result = $db->prepared_select_query($query, [$album_id, $photo_id]);
@@ -256,6 +262,15 @@
               null,
               $result[0]['photo_verified'],
               $album_id
+            );
+            $photo->author = new User
+            (
+              $result[0]['user_id'],
+              $result[0]['user_login'],
+              $result[0]['user_email'],
+              null,
+              null,
+              null
             );
           }
           else
@@ -281,7 +296,7 @@
         }
       }
     }
-    else if ($show == 'unverified_photos')
+    else if ($filter == 'unverified_photos')
     {
       if (empty($photo_id))
       {
@@ -385,7 +400,7 @@
           '<div class="card my-1-5 p-0-5 bg-light border">' . PHP_EOL .
             '<div class="card-body">' . PHP_EOL;
         // Redirect user to the following URL after deleting a photo
-        $_SESSION['redirect_url'] = ROOT_URL . '?page=admin_panel&tab=photos&show=unverified_photos';
+        $_SESSION['redirect_url'] = ROOT_URL . '?page=admin_panel&tab=photos&filter=unverified_photos';
         $update_photo_form_mode = 'privileged';
         include VIEWS_PATH . 'photos/update_photo_form.php';
         echo

@@ -19,10 +19,33 @@
       '<div id="update_album_form" class="text-center">' . PHP_EOL .
         '<h3 class="m-0">Zedytuj album</h3>' . PHP_EOL .
         '<h5 class="m-0">"' . $album->title . '"</h5>' . PHP_EOL .
-        '<small class="d-block text-muted mb-0-5">(wypełnij tylko te pola, które chcesz zmodyfikować)</small>' . PHP_EOL .
+        '<small class="d-block text-muted mb-1">(wypełnij tylko te pola, które chcesz zmodyfikować)</small>' . PHP_EOL .
         '<form class="text-left" action="' . BACKEND_URL . 'album/update.php" method="post">' . PHP_EOL .
           (isset($update_album_form_mode) ? '<input type="hidden" name="mode" value="' . $update_album_form_mode . '">' . PHP_EOL : '') .
-          '<input type="hidden" name="album_id" value="' . $album->id . '">' . PHP_EOL .
+          '<input type="hidden" name="album_id" value="' . $album->id . '">' . PHP_EOL;
+    if (!empty((string)$album->author->email))
+    {
+      echo
+          '<div class="d-flex flex-column flex-md-row form-group p-0-5 bg-white border rounded">' . PHP_EOL .
+            '<div class="js-spinner-container w-64px h-64px position-relative mx-auto mb-0-25 m-md-0">' . PHP_EOL .
+              '<div class="js-spinner d-flex justify-content-center align-items-center overlay text-light bg-dark rounded-circle">' . PHP_EOL .
+                '<i class="fas fa-spinner fa-2x fa-spin"></i>' . PHP_EOL .
+              '</div>' . PHP_EOL .
+              '<img class="w-100 h-100 border rounded-circle" src="#" data-src="' . get_gravatar_url($album->author->email) . '" alt="#">' . PHP_EOL .
+            '</div>' . PHP_EOL .
+            '<div class="d-flex flex-column justify-content-center text-center text-md-left p-md-0-5">' . PHP_EOL .
+              '<p class="m-0">Ten album został stworzony przez ' . $album->author->login . '</p>' . PHP_EOL;
+      if (has_enough_permissions('administrator'))
+      {
+        echo
+              '<a class="underline underline--narrow underline-primary underline-animation align-self-center align-self-md-start" href="' .
+              ROOT_URL . '?page=admin_panel&tab=users&user_id=' . $album->author->id . '">Zedytuj konto ' . $album->author->login . '</a>' . PHP_EOL;
+      }
+      echo
+            '</div>' . PHP_EOL .
+          '</div>' . PHP_EOL;
+    }
+    echo
           '<div class="form-group">' . PHP_EOL .
             '<label for="title">Tytuł albumu</label>' . PHP_EOL .
             '<input id="title" class="form-control" name="title" type="text" placeholder="Tytuł albumu" value="';
@@ -67,7 +90,7 @@
           '</div>' . PHP_EOL .
           '<div class="text-center">' . PHP_EOL .
             '<div class="d-inline-block btn-tooltip btn-tooltip-primary" tabindex="0" data-toggle="tooltip" title="Formularz jest niepoprawnie wypełniony!">' . PHP_EOL .
-              '<button id="submit" class="btn btn-primary" tabindex="-1" type="submit">Zapisz zmiany</button>' . PHP_EOL .
+              '<button class="btn btn-primary" tabindex="-1" type="submit">Zapisz zmiany</button>' . PHP_EOL .
             '</div>' . PHP_EOL .
           '</div>' . PHP_EOL .
         '</form>' . PHP_EOL .

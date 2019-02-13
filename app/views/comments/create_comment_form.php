@@ -32,7 +32,7 @@
           '<input type="hidden" name="photo_id" value="' . $photo_id . '">' . PHP_EOL .
           '<div class="form-group">' . PHP_EOL .
             '<label for="comment">Komentarz</label>' . PHP_EOL .
-            '<textarea id="comment" class="form-control" name="comment" rows="3" placeholder="Komentarz">' . PHP_EOL;
+            '<textarea id="comment" class="js-expand-textarea form-control" name="comment" rows="3" data-min-rows="3" placeholder="Komentarz">' . PHP_EOL;
       if (isset($_SESSION['create_comment_form']['comment']))
       {
         echo $_SESSION['create_comment_form']['comment'];
@@ -43,7 +43,7 @@
           '</div>' . PHP_EOL .
           '<div class="text-center">' . PHP_EOL .
             '<div class="d-inline-block btn-tooltip btn-tooltip-primary" tabindex="0" data-toggle="tooltip" title="Formularz jest niepoprawnie wypełniony!">' . PHP_EOL .
-              '<button id="submit" class="btn btn-primary" tabindex="-1" type="submit">Dodaj komentarz</button>' . PHP_EOL .
+              '<button class="btn btn-primary" tabindex="-1" type="submit">Dodaj komentarz</button>' . PHP_EOL .
             '</div>' . PHP_EOL .
           '</div>' . PHP_EOL .
         '</form>' . PHP_EOL;

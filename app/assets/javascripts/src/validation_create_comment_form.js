@@ -1,35 +1,35 @@
 import $ from 'jquery';
-import Popover from './popover';
 import Validation from './validation';
-import { FieldValidations, disableSubmitButton } from './field_validations';
+import { Popover } from './popover';
+import { FieldValidations, disableSubmit } from './field_validations';
 
-$(document).ready(function()
+$(() =>
 {
-  var form = $('#create_comment_form');
+  const form = $('#create_comment_form');
 
   if (form.length)
   {
-    var comment = form.find('#comment');
-    var submit = form.find('#submit');
+    const comment = form.find('#comment');
+    const submit = form.find('button[type="submit"]');
 
-    var comment_validations = new FieldValidations
+    let comment_validations = new FieldValidations
     (
       comment,
       new Array
       (
-        new Validation('Komentarz musi posiadać od 1 do 500 znaków!', /^.{1,500}$/m),
+        new Validation('Komentarz musi posiadać od 1 do 1000 znaków!', /^.{1,1000}$/m),
         new Validation('Komentarz musi posiadać przynajmniej jeden znak spoza białych znaków!', /^(?=.*[^\s]).+$/m)
       ),
       new Popover(comment)
     );
-
-    var validations = [comment_validations];
+    let validations = [comment_validations];
 
     validations.forEach(validation =>
     {
-      validation.field.on('keyup change', function()
+      validation.$field.on('keyup change', () =>
       {
-        var disabled = false;
+        let disabled = false;
+
         validations.forEach(validation =>
         {
           if (!validation.passed_validations)
@@ -37,9 +37,9 @@ $(document).ready(function()
             disabled = true;
           }
         });
-        disableSubmitButton(submit, disabled);
+        disableSubmit(submit, disabled);
       });
-      validation.field.trigger('change');
+      validation.$field.trigger('change');
     });
   }
 });

@@ -5,6 +5,7 @@
 
   $photo_id = isset($_POST['photo_id']) ? $_POST['photo_id'] : null;
   $user_id = isset($_SESSION['current_user']['id']) ? $_SESSION['current_user']['id'] : null;
+  $recaptcha = isset($_POST['recaptcha']) ? $_POST['recaptcha'] : null;
 
   if (!validate_request('post', [$photo_id, $user_id]))
   {
@@ -44,6 +45,12 @@
 
     if (count($errors) == 0)
     {
+      if (!check_recaptcha($recaptcha, true))
+      {
+        echo 'Weryfikacja reCAPTCHA zakończona niepowodzeniem! Spróbuj ponownie później.';
+        exit();
+      }
+
       $db->prepared_query('DELETE FROM photos_ratings WHERE photo_id = ? AND user_id = ?;', [$photo_id, $user_id]);
 
       $response =

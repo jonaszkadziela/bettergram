@@ -50,7 +50,6 @@
         null,
         $result[0]['album_user_id']
       );
-      $album->author->login = $result[0]['user_login'];
       $photo = new Photo
       (
         $result[0]['photo_id'],
@@ -59,6 +58,7 @@
         $result[0]['photo_verified'],
         $album->id
       );
+      $album->author->login = $result[0]['user_login'];
 
       $query =
         'SELECT
@@ -67,7 +67,8 @@
           pc.date AS comment_date,
           pc.verified AS comment_verified,
           pc.user_id AS comment_user_id,
-          u.login AS user_login
+          u.login AS user_login,
+          u.email AS user_email
         FROM
           photos_comments AS pc
         JOIN users AS u
@@ -91,7 +92,15 @@
           $photo_id,
           $result[$i]['comment_user_id']
         );
-        end($photo->comments)->author->login = $result[$i]['user_login'];
+        end($photo->comments)->author = new User
+        (
+          null,
+          $result[$i]['user_login'],
+          $result[$i]['user_email'],
+          null,
+          null,
+          null
+        );
       }
     }
     else
@@ -120,7 +129,7 @@
 
       if (!$photo->verified)
       {
-        if ($album->user_id == $_SESSION['current_user']['id'])
+        if ($album->user_id == $_SESSION['current_user']['id'] || has_enough_permissions('moderator'))
         {
           $_SESSION['notice'][] = 'To zdjęcie nie zostało jeszcze zaakceptowane, dlatego jest niewidoczne publicznie.';
         }
@@ -151,21 +160,24 @@
   <?php
     include_once VIEWS_PATH . 'shared/navbar.php';
   ?>
-  <div class="container d-flex flex-grow-1 flex-column h-100 my-3">
-    <div class="row flex-grow-1">
+  <div class="container d-flex flex-fill flex-column my-3">
+    <div class="row flex-fill">
       <div class="col-sm-12 col-md-10 m-auto">
         <?php
           include_once VIEWS_PATH . 'shared/flash.php';
         ?>
-        <div class="card p-1 shadow-lg">
+        <?php // Class 'd-block' was deliberately placed here in order to fix a weird flex bug in Internet Explorer ?>
+        <div class="card d-block p-1 shadow-lg">
           <div class="card-body text-center">
             <h2 class="underline underline-primary mb-1-5">Zdjęcie z albumu</h2>
             <?php
               echo
                 '<h4 class="mb-1-5">"' . $album->title . '"</h4>' . PHP_EOL .
-                '<div class="d-flex flex-column justify-content-center">' . PHP_EOL;
+                '<div class="d-flex flex-column justify-content-center">' . PHP_EOL .
+                  '<div class="flex-shrink-0 rounded-top rounded-bottom-0">' . PHP_EOL;
               include VIEWS_PATH . 'photos/render_photo.php';
               echo
+                  '</div>' . PHP_EOL .
                   '<div class="card border-top-0 rounded-top-0 bg-light">' . PHP_EOL .
                     '<div class="card-body d-flex flex-column justify-content-center">' . PHP_EOL .
                       '<p class="h5 font-weight-bold">' . (strlen($photo->description) > 0 ? 'Opis zdjęcia' : 'To zdjęcie nie posiada opisu') . '</p>' . PHP_EOL .

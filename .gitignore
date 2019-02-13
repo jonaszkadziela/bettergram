@@ -2,8 +2,15 @@
 
 /content/albums/*
 /node_modules/*
-/database_schema/*
-!/database_schema/kadziela_4ta_database.sql
-!.keep
 
-/env.php
+/database_schema/*
+!/database_schema/bettergram_database.sql
+
+/app/assets/javascripts/*
+!/app/assets/javascripts/src/
+
+/app/assets/stylesheets/*
+!/app/assets/stylesheets/scss/
+
+!.keep
+env.php

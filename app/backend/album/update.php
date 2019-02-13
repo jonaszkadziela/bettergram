@@ -6,6 +6,7 @@
   $mode = isset($_POST['mode']) ? $_POST['mode'] : null;
   $album_id = isset($_POST['album_id']) ? $_POST['album_id'] : null;
   $user_id = isset($_SESSION['current_user']['id']) ? $_SESSION['current_user']['id'] : null;
+  $recaptcha = isset($_POST['recaptcha']) ? $_POST['recaptcha'] : null;
 
   $mode = filter_var($mode, FILTER_SANITIZE_STRING);
 
@@ -49,6 +50,12 @@
 
       if (count($errors) == 0)
       {
+        if (!check_recaptcha($recaptcha))
+        {
+          header('Location: ' . get_referrer_url());
+          exit();
+        }
+
         if (filter_var($delete_album, FILTER_VALIDATE_BOOLEAN))
         {
           $result2 = $db->prepared_select_query('SELECT GROUP_CONCAT(DISTINCT p.id) AS photo_ids FROM albums AS a JOIN photos AS p ON a.id = p.album_id WHERE a.id = ?;', [$album_id]);

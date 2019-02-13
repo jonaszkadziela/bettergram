@@ -1,5 +1,5 @@
 module.exports = {
-  "minify": true,
+  "minify": false,
   "options": [
     "setClasses"
   ],

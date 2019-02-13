@@ -1,20 +1,20 @@
 import $ from 'jquery';
-import Popover from './popover';
 import Validation from './validation';
-import { FieldValidations, disableSubmitButton } from './field_validations';
+import { Popover } from './popover';
+import { FieldValidations, disableSubmit } from './field_validations';
 
-$(document).ready(function()
+$(() =>
 {
-  var form = $('#update_user_form');
+  const form = $('#update_user_form');
 
   if (form.length)
   {
-    var email = form.find('#email');
-    var password1 = form.find('#password1');
-    var password2 = form.find('#password2');
-    var current_password = form.find('#current_password');
-    var submit = form.find('#submit');
-    var mode = form.find('#mode');
+    const email = form.find('#email');
+    const password1 = form.find('#password1');
+    const password2 = form.find('#password2');
+    const current_password = form.find('#current_password');
+    const submit = form.find('button[type="submit"]');
+    const mode = form.find('#mode');
 
     new FieldValidations
     (
@@ -25,7 +25,6 @@ $(document).ready(function()
       ),
       new Popover(email)
     );
-
     new FieldValidations
     (
       password1,
@@ -36,7 +35,6 @@ $(document).ready(function()
       ),
       new Popover(password1)
     );
-
     new FieldValidations
     (
       password2,
@@ -44,7 +42,7 @@ $(document).ready(function()
       (
         new Validation('Nowe hasło musi posiadać od 6 do 20 znaków!', /^.{6,20}$/m),
         new Validation('Nowe hasło musi zawierać przynajmniej 1 dużą literę, 1 małą literę i 1 cyfrę!', /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9!@#$%^&*]{6,20}$/m),
-        new Validation('Nowe hasła muszą być identyczne!', function()
+        new Validation('Nowe hasła muszą być identyczne!', () =>
         {
           if (password1.val() != password2.val())
           {
@@ -55,8 +53,7 @@ $(document).ready(function()
       ),
       new Popover(password2)
     );
-
-    var current_password_validations = new FieldValidations
+    let current_password_validations = new FieldValidations
     (
       current_password,
       new Array
@@ -66,20 +63,20 @@ $(document).ready(function()
       ),
       new Popover(current_password)
     );
-
-    var validations = [current_password_validations];
+    let validations = [current_password_validations];
 
     if (mode.length)
     {
       validations = [];
-      disableSubmitButton(submit, false);
+      disableSubmit(submit, false);
     }
 
     validations.forEach(validation =>
     {
-      validation.field.on('keyup change', function()
+      validation.$field.on('keyup change', () =>
       {
-        var disabled = false;
+        let disabled = false;
+
         validations.forEach(validation =>
         {
           if (!validation.passed_validations)
@@ -87,9 +84,9 @@ $(document).ready(function()
             disabled = true;
           }
         });
-        disableSubmitButton(submit, disabled);
+        disableSubmit(submit, disabled);
       });
-      validation.field.trigger('change');
+      validation.$field.trigger('change');
     });
   }
 });

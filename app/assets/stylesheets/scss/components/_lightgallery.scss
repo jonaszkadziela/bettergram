@@ -1,0 +1,15 @@
+.lg-on {
+  overflow: hidden;
+}
+
+.lg-sub-html {
+  opacity: 1;
+  @include transitionCustom(transform 0.35s cubic-bezier(0, 0, 0.25, 1) 0s, opacity 0.35s cubic-bezier(0, 0, 0.25, 1) 0s, color 0.2s linear);
+}
+
+.lg-hide-items {
+  .lg-sub-html {
+    opacity: 0;
+    @include translate3d(0, 10px, 0);
+  }
+}

@@ -10,8 +10,8 @@
   <?php
     include_once VIEWS_PATH . 'shared/navbar.php';
   ?>
-  <div class="container d-flex flex-grow-1 flex-column h-100 my-3">
-    <div class="row flex-grow-1">
+  <div class="container d-flex flex-fill flex-column my-3">
+    <div class="row flex-fill">
       <div class="col-lg-8 m-auto">
         <?php
           include_once VIEWS_PATH . 'shared/flash.php';

@@ -1,18 +1,18 @@
 import $ from 'jquery';
-import Popover from './popover';
 import Validation from './validation';
-import { FieldValidations, disableSubmitButton } from './field_validations';
+import { Popover } from './popover';
+import { FieldValidations, disableSubmit } from './field_validations';
 
-$(document).ready(function()
+$(() =>
 {
-  var form = $('#create_album_form');
+  const form = $('#create_album_form');
 
   if (form.length)
   {
-    var title = form.find('#title');
-    var submit = form.find('#submit');
+    const title = form.find('#title');
+    const submit = form.find('button[type="submit"]');
 
-    var title_validations = new FieldValidations
+    let title_validations = new FieldValidations
     (
       title,
       new Array
@@ -22,14 +22,14 @@ $(document).ready(function()
       ),
       new Popover(title)
     );
-
-    var validations = [title_validations];
+    let validations = [title_validations];
 
     validations.forEach(validation =>
     {
-      validation.field.on('keyup change', function()
+      validation.$field.on('keyup change', () =>
       {
-        var disabled = false;
+        let disabled = false;
+
         validations.forEach(validation =>
         {
           if (!validation.passed_validations)
@@ -37,9 +37,9 @@ $(document).ready(function()
             disabled = true;
           }
         });
-        disableSubmitButton(submit, disabled);
+        disableSubmit(submit, disabled);
       });
-      validation.field.trigger('change');
+      validation.$field.trigger('change');
     });
   }
 });

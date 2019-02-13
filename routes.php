@@ -63,7 +63,7 @@
   }
 
   $pages_for_target_url = ['login', 'register', 'welcome'];
-  if (!in_array($target_page, $pages_for_target_url))
+  if (!in_array($target_page, $pages_for_target_url) || (empty($_GET['redirect']) && isset($_SESSION['target_url'])))
   {
     unset($_SESSION['target_url']);
   }

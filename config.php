@@ -20,7 +20,7 @@
   $config_content_path = $config_root_path . 'content/';
   $config_views_path = $config_root_path . 'app/views/';
 
-  $config_assets_version = '2019-02-03';
+  $config_assets_version = '2019-02-26';
   $config_assets_suffix = '_' . $config_assets_version . '.min';
   $config_max_execution_time_seconds = 300;
   $config_upload_max_filesize = '5M'; // Make sure that 'upload_max_filesize' in '.htaccess' is set at least to this value
@@ -35,6 +35,10 @@
   $config_max_rating = 10;
   $config_photo_size = 1200; // Photos uploaded by users will be scaled down so that their longer side matches this value
   $config_photo_thumbnail_size = 360; // Thumbnails of photos will be scaled down so that their longer side matches this value
+  $config_gravatar_default_image = 'mp'; // @see https://en.gravatar.com/site/implement/images/#default-image
+  $config_analytics_enabled = false;
+  $config_recaptcha_enabled = false;
+  $config_recaptcha_score_threshold = 0.5; // @see https://developers.google.com/recaptcha/docs/v3#site-verify-response
   $config_character_encoding = 'utf-8';
   $config_admin_mail = 'admin@jonaszkadziela.pl';
   $config_environment = 'development'; // Applicable values: 'development' or 'production'
@@ -72,6 +76,10 @@
   define('MAX_RATING', $config_max_rating);
   define('PHOTO_SIZE', $config_photo_size);
   define('PHOTO_THUMBNAIL_SIZE', $config_photo_thumbnail_size);
+  define('GRAVATAR_DEFAULT_IMAGE', $config_gravatar_default_image);
+  define('ANALYTICS_ENABLED', $config_analytics_enabled);
+  define('RECAPTCHA_ENABLED', $config_recaptcha_enabled);
+  define('RECAPTCHA_SCORE_THRESHOLD', $config_recaptcha_score_threshold);
   define('CHARACTER_ENCODING', $config_character_encoding);
   define('ADMIN_MAIL', $config_admin_mail);
   define('ENVIRONMENT', $config_environment);

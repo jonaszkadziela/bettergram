@@ -55,7 +55,7 @@
         case 'popover':
           echo
             '<a class="d-block link--clean w-180px h-100 m-auto" href="' . $albums_link . '&album_id=' . $album->id . '" ' .
-            'data-toggle="tooltip" data-html="true" title="' .
+            'data-toggle="tooltip" data-html="true" data-trigger="manual" title="' .
             sanitize_text($album->title) . '<br>' .
             '<b>' . $album->author . '</b><br>' .
             '(' . $album->date->format('d.m.Y') . ' ' . $album->date->format('G:i') . ')' .
@@ -66,23 +66,20 @@
         default:
           echo '<a class="d-block link--clean w-180px h-100 m-auto" href="' . $albums_link . '&album_id=' . $album->id . '">' . PHP_EOL;
       }
-
-      if (!is_null($albums_badge_content))
+      switch ($albums_badge_content)
       {
-        switch ($albums_badge_content)
-        {
-          case 'unverified_photos_count':
-            if ($album->unverified_photos_count > 0)
-            {
-              $album_badge = 'Do akceptacji: ' . $albums[$i]->unverified_photos_count;
-            }
-            else
-            {
-              unset($album_badge);
-            }
-          break;
-        }
+        case 'unverified_photos_count':
+          if ($album->unverified_photos_count > 0)
+          {
+            $album_badge = 'Do akceptacji: ' . $albums[$i]->unverified_photos_count;
+          }
+          else
+          {
+            unset($album_badge);
+          }
+        break;
       }
+
       include VIEWS_PATH . 'albums/render_album.php';
 
       echo

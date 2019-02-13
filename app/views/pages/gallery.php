@@ -41,7 +41,6 @@
         $result[$i]['album_date'],
         $result[$i]['album_user_id']
       );
-      $albums[$i]->author->login = $result[$i]['user_login'];
       $albums[$i]->photos[0] = new Photo
       (
         $result[$i]['photo_id'],
@@ -50,6 +49,7 @@
         1,
         $result[$i]['album_id']
       );
+      $albums[$i]->author->login = $result[$i]['user_login'];
     }
 
     $sort = isset($_GET['sort']) ? $_GET['sort'] : 'title';
@@ -72,8 +72,8 @@
   <?php
     include_once VIEWS_PATH . 'shared/navbar.php';
   ?>
-  <div class="container d-flex flex-grow-1 flex-column h-100 my-3">
-    <div class="row flex-grow-1">
+  <div class="container d-flex flex-fill flex-column my-3">
+    <div class="row flex-fill">
       <div class="col-lg-12 col-xl-10 m-auto">
         <?php
           include_once VIEWS_PATH . 'shared/flash.php';

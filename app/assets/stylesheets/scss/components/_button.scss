@@ -13,6 +13,20 @@
   }
 }
 
+.btn--clean {
+  @include hover-focus-active {
+    color: darken($gray-600, 50%);
+  }
+
+  padding: 0;
+  color: $gray-600;
+
+  &:focus,
+  &.focus {
+    box-shadow: none;
+  }
+}
+
 @each $color, $value in $theme-colors {
   .btn-tooltip-#{$color} {
     @include button-variant(transparent, $value);

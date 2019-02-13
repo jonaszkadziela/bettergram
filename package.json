@@ -22,28 +22,34 @@
     "compile-dev": "webpack --mode development --config webpack.config.js",
     "compile-prod": "webpack --mode production --config webpack.config.js",
     "modernizr": "modernizr --config modernizr.config.js --dest app/assets/javascripts/src/modernizr.js",
-    "update": "ncu -a && npm update && shx echo 'Update completed!'",
+    "update": "ncu -a && npm update && shx echo Update completed! Remember to run 'npm install'.",
     "watch": "webpack --watch --mode development"
   },
   "browserslist": [
     "last 2 versions",
     "> 1%",
-    "IE 10"
+    "IE 11"
   ],
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
-    "@babel/runtime": "^7.2.0",
-    "bootstrap": "^4.2.1",
+    "@babel/runtime": "^7.3.1",
+    "bootstrap": "^4.3.1",
+    "ganalytics": "^3.1.1",
     "jquery": "^3.3.1",
+    "lg-fullscreen": "^1.0.1",
+    "lg-zoom": "^1.1.0",
+    "lightgallery": "^1.6.11",
     "modernizr": "^3.6.0",
-    "popper.js": "^1.14.6"
+    "popper.js": "^1.14.7",
+    "recaptcha-v3": "^1.2.2"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "@babel/plugin-transform-runtime": "^7.2.0",
-    "@babel/preset-env": "^7.2.3",
-    "autoprefixer": "^9.4.3",
-    "babel-loader": "^8.0.4",
+    "@babel/preset-env": "^7.3.1",
+    "@fortawesome/fontawesome-free": "^5.7.2",
+    "autoprefixer": "^9.4.7",
+    "babel-loader": "^8.0.5",
     "babel-preset-minify": "^0.5.0",
     "css-loader": "^2.1.0",
     "extract-loader": "^3.1.0",
@@ -55,9 +61,9 @@
     "postcss-loader": "^3.0.0",
     "sass-loader": "^7.1.0",
     "shx": "^0.3.2",
-    "webpack": "^4.28.3",
+    "webpack": "^4.29.3",
     "webpack-clean-obsolete-chunks": "^0.4.0",
-    "webpack-cli": "^3.1.2",
+    "webpack-cli": "^3.2.3",
     "webpack-merge": "^4.2.1"
   }
 }

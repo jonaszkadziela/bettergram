@@ -38,16 +38,26 @@
     ?>
     <link rel="icon" type="image/png" sizes="192x192" href="<?php echo IMAGES_URL ?>favicons/android-icon-192x192.png">
     <link rel="manifest" href="<?php echo ROOT_URL ?>manifest.json">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
     <link rel="stylesheet" href="<?php echo get_asset_path('main.css') ?>">
     <title><?php echo get_page_title() ?></title>
   </head>
   <body>
-    <script>
-      var ENVIRONMENT = "<?php echo ENVIRONMENT ?>";
-    </script>
-    <script defer src="<?php echo get_asset_path('main.js') ?>"></script>
     <?php
+      if (RECAPTCHA_ENABLED || ANALYTICS_ENABLED)
+      {
+        require 'env.php';
+      }
+      echo
+        '<script>' . PHP_EOL .
+          'var ENVIRONMENT = "' . ENVIRONMENT . '";' . PHP_EOL .
+          'var ANALYTICS_ENABLED = ' . (ANALYTICS_ENABLED ? 'true' : 'false') . ';' . PHP_EOL .
+          (ANALYTICS_ENABLED ? 'var ANALYTICS_TRACKING_ID = "' . $env['analytics']['tracking_id'] . '";' . PHP_EOL : '') .
+          'var RECAPTCHA_ENABLED = ' . (RECAPTCHA_ENABLED ? 'true' : 'false') . ';' . PHP_EOL .
+          (RECAPTCHA_ENABLED ? 'var RECAPTCHA_SITE_KEY = "' . $env['recaptcha']['site_key'] . '";' . PHP_EOL : '') .
+          (RECAPTCHA_ENABLED ? 'var CURRENT_PAGE = "' . str_replace('_', '', $_SESSION['current_page']) . '";' . PHP_EOL : '') .
+        '</script>' . PHP_EOL .
+        '<script defer src="' . get_asset_path('main.js') . '"></script>' . PHP_EOL;
+
       if (empty($_GET['error']))
       {
         $file = VIEWS_PATH . 'pages/' . $_SESSION['current_page'] . '.php';

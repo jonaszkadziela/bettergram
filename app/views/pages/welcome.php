@@ -22,8 +22,8 @@
   }
 ?>
 <div class="d-flex flex-column min-vh-100 bg-img-1">
-  <div class="container d-flex flex-grow-1 flex-column h-100 my-3">
-    <div class="row flex-grow-1">
+  <div class="container d-flex flex-fill flex-column my-3">
+    <div class="row flex-fill">
       <div class="col-lg-6 m-auto">
         <div class="card p-1 shadow-lg">
           <div class="card-body text-center">

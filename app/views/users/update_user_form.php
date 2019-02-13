@@ -30,7 +30,36 @@
         '<small class="d-block text-muted mb-1">(wypełnij tylko te pola, które chcesz zmodyfikować)</small>' . PHP_EOL .
         '<form class="text-left" action="' . BACKEND_URL . 'user/update.php" method="post">' . PHP_EOL .
           (isset($update_user_form_mode) ? '<input id="mode" type="hidden" name="mode" value="' . $update_user_form_mode . '">' . PHP_EOL : '') .
-          '<input type="hidden" name="user_id" value="' . $user->id . '">' . PHP_EOL .
+          '<input type="hidden" name="user_id" value="' . $user->id . '">' . PHP_EOL;
+    if ($user->email == $_SESSION['current_user']['email'])
+    {
+      echo
+          '<div class="d-flex flex-column flex-md-row form-group p-0-5 bg-white border rounded">' . PHP_EOL .
+            '<div class="js-spinner-container w-64px h-64px position-relative mx-auto mb-0-25 m-md-0">' . PHP_EOL .
+              '<div class="js-spinner d-flex justify-content-center align-items-center overlay text-light bg-dark rounded-circle">' . PHP_EOL .
+                '<i class="fas fa-spinner fa-2x fa-spin"></i>' . PHP_EOL .
+              '</div>' . PHP_EOL .
+              '<img class="w-100 h-100 border rounded-circle" src="#" data-src="' . get_gravatar_url($user->email) . '" alt="#">' . PHP_EOL .
+            '</div>' . PHP_EOL .
+            '<div class="d-flex flex-column justify-content-center text-center text-md-left p-md-0-5">' . PHP_EOL .
+              '<p class="m-0">Chcesz zmienić swoje zdjęcie profilowe?</p>' . PHP_EOL .
+              '<a class="underline underline--narrow underline-primary underline-animation align-self-center align-self-md-start" href="https://gravatar.com/" target="_blank" rel="noreferrer">Przejdź do strony Gravatar.com</a>' . PHP_EOL .
+            '</div>' . PHP_EOL .
+          '</div>' . PHP_EOL;
+    }
+    else
+    {
+      echo
+          '<div class="form-group mb-md-0">' . PHP_EOL .
+            '<div class="js-spinner-container w-64px h-64px position-relative mx-auto">' . PHP_EOL .
+              '<div class="js-spinner d-flex justify-content-center align-items-center overlay text-light bg-dark rounded-circle">' . PHP_EOL .
+                '<i class="fas fa-spinner fa-2x fa-spin"></i>' . PHP_EOL .
+              '</div>' . PHP_EOL .
+              '<img class="w-100 h-100 border rounded-circle" src="#" data-src="' . get_gravatar_url($user->email) . '" alt="#">' . PHP_EOL .
+            '</div>' . PHP_EOL .
+          '</div>' . PHP_EOL;
+    }
+    echo
           '<div class="form-group">' . PHP_EOL .
             '<label for="email">Email</label>' . PHP_EOL .
             '<input id="email" class="form-control" name="email" type="text" placeholder="Email" value="';
@@ -114,7 +143,7 @@
           '<div class="text-center">' . PHP_EOL .
             (empty($update_user_form_mode) ? '<small class="d-block text-muted my-1">* - to pole jest obowiązkowe</small>' . PHP_EOL : '') .
             '<div class="d-inline-block btn-tooltip btn-tooltip-primary" tabindex="0" data-toggle="tooltip" title="Formularz jest niepoprawnie wypełniony!">' . PHP_EOL .
-              '<button id="submit" class="btn btn-primary" tabindex="-1" type="submit">Zapisz zmiany</button>' . PHP_EOL .
+              '<button class="btn btn-primary" tabindex="-1" type="submit">Zapisz zmiany</button>' . PHP_EOL .
             '</div>' . PHP_EOL .
           '</div>' . PHP_EOL .
         '</form>' . PHP_EOL .

@@ -1,13 +1,26 @@
 import $ from 'jquery';
-import 'bootstrap/js/dist/tooltip';
+import { responsivePopover } from './popover';
 
-var disable_submit_button = ENVIRONMENT == 'production' ? true : false;
+const DISABLE_SUBMIT = ENVIRONMENT == 'production' ? true : false;
+var validation_popover_options =
+{
+	trigger: 'manual',
+	placement: 'auto',
+	title: 'Nieprawidłowe dane!',
+	content: 'Opis błędu.',
+  template:
+    '<div class="popover" role="tooltip">' +
+      '<div class="arrow"></div>' +
+        '<h3 class="popover-header text-white bg-danger"></h3>' +
+      '<div class="popover-body"></div>' +
+    '</div>'
+};
 
 class FieldValidations
 {
-  constructor(field, validations, popover)
+  constructor($field, validations, popover)
   {
-    this.field = field;
+    this.$field = $field;
     this.validations = validations;
     this.popover = popover;
     this.passed_validations = false;
@@ -16,24 +29,29 @@ class FieldValidations
 
   init()
   {
-    var that = this;
-    this.field.on('keyup change', function(e)
+    this.popover.setOptions(validation_popover_options);
+
+    this.$field.on('keyup change', () =>
     {
-      // Ignore tab key
-      if (e.keyCode != 9)
+      this.run();
+    });
+    $(window).on('resize', () =>
+    {
+      if (this.popover.options.placement != validation_popover_options.placement)
       {
-        that.run();
+        this.popover.setOptions(validation_popover_options);
+        this.run();
       }
     });
   }
 
   run()
   {
-    var success = true;
+    let success = true;
 
-    for (var i = 0; i < this.validations.length; i++)
+    for (let i = 0; i < this.validations.length; i++)
     {
-      if (!this.validations[i].test(this.field))
+      if (!this.validations[i].test(this.$field))
       {
         if (this.popover.options.content != this.validations[i].error)
         {
@@ -46,7 +64,7 @@ class FieldValidations
       }
     }
 
-    if (success || this.field.val() == '')
+    if (success || this.$field.val() == '')
     {
       this.popover.hide();
     }
@@ -54,20 +72,37 @@ class FieldValidations
   }
 }
 
-function disableSubmitButton(button, disabled)
+function disableSubmit($button, disabled)
 {
-  button.attr('disabled', disabled ? disable_submit_button : false);
-  button.attr('tabindex', disabled ? '-1' : '0');
-  button.parent().attr('tabindex', disabled ? '0' : '-1');
-  button.parent().tooltip(disabled ? 'enable' : 'disable');
+  $button.attr('disabled', disabled ? DISABLE_SUBMIT : false);
+  $button.attr('tabindex', disabled ? '-1' : '0');
+  $button.parent().attr('tabindex', disabled ? '0' : '-1');
+  $button.parent().tooltip(disabled ? 'enable' : 'disable');
 }
 
-$(document).ready(function()
+$(() =>
 {
   $('button[type="submit"]').each(function()
   {
-    disableSubmitButton($(this), true);
+    const initial_text = $(this).html();
+    const loading_text = initial_text + '<i class="fas fa-sync-alt fa-spin ml-0-5"></i>';
+
+    $(this).on('click', () =>
+    {
+      if ($(this).html() != loading_text)
+      {
+        $(this).html(loading_text);
+      }
+    });
+
+    disableSubmit($(this), true);
+  });
+
+  responsivePopover(validation_popover_options);
+  $(window).on('resize', () =>
+  {
+    responsivePopover(validation_popover_options);
   });
 });
 
-export { FieldValidations, disableSubmitButton };
+export { FieldValidations, disableSubmit };

@@ -17,17 +17,17 @@
   {
     $user_id = isset($_GET['user_id']) ? $_GET['user_id'] : null;
 
-    $show = isset($_GET['show']) ? $_GET['show'] : 'all';
-    switch ($show)
+    $filter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
+    switch ($filter)
     {
       case 'all':
-      case 'regular_users':
+      case 'regular':
       case 'moderators':
       case 'administrators':
       break;
 
       default:
-        header('Location: ' . ROOT_URL . modify_get_parameters(['show' => 'all']));
+        header('Location: ' . ROOT_URL . modify_get_parameters(['filter' => 'all']));
         exit();
     }
 
@@ -37,14 +37,14 @@
         '<div class="rounded border bg-light my-1-5 p-1">' . PHP_EOL .
           '<div class="row">' . PHP_EOL .
             '<div class="col-12 col-md-auto d-flex flex-column justify-content-center px-md-0-5 ml-auto">' . PHP_EOL .
-              '<label class="m-md-0" for="select_show">Wyświetl</label>' . PHP_EOL .
+              '<label class="m-md-0" for="select_filter">Wyświetl</label>' . PHP_EOL .
             '</div>' . PHP_EOL .
             '<div class="col-12 col-md-6 px-md-0-5 mr-auto">' . PHP_EOL .
-              '<select id="select_show" class="js-select-links custom-select">' . PHP_EOL .
-                '<option value="' . ROOT_URL . modify_get_parameters(['show' => 'all']) . '"' . ($show == 'all' ? ' selected' : '') . '>Wszyscy użytkownicy</option>' . PHP_EOL .
-                '<option value="' . ROOT_URL . modify_get_parameters(['show' => 'regular_users']) . '"' . ($show == 'regular_users' ? ' selected' : '') . '>Zwykli użytkownicy</option>' . PHP_EOL .
-                '<option value="' . ROOT_URL . modify_get_parameters(['show' => 'moderators']) . '"' . ($show == 'moderators' ? ' selected' : '') . '>Moderatorzy</option>' . PHP_EOL .
-                '<option value="' . ROOT_URL . modify_get_parameters(['show' => 'administrators']) . '"' . ($show == 'administrators' ? ' selected' : '') . '>Administratorzy</option>' . PHP_EOL .
+              '<select id="select_filter" class="js-select-links custom-select">' . PHP_EOL .
+                '<option value="' . ROOT_URL . modify_get_parameters(['filter' => 'all']) . '"' . ($filter == 'all' ? ' selected' : '') . '>Wszyscy użytkownicy</option>' . PHP_EOL .
+                '<option value="' . ROOT_URL . modify_get_parameters(['filter' => 'regular']) . '"' . ($filter == 'regular' ? ' selected' : '') . '>Zwykli użytkownicy</option>' . PHP_EOL .
+                '<option value="' . ROOT_URL . modify_get_parameters(['filter' => 'moderators']) . '"' . ($filter == 'moderators' ? ' selected' : '') . '>Moderatorzy</option>' . PHP_EOL .
+                '<option value="' . ROOT_URL . modify_get_parameters(['filter' => 'administrators']) . '"' . ($filter == 'administrators' ? ' selected' : '') . '>Administratorzy</option>' . PHP_EOL .
               '</select>' . PHP_EOL .
             '</div>' . PHP_EOL .
           '</div>' . PHP_EOL .
@@ -53,15 +53,15 @@
       $users = [];
 
       $permissions = '%';
-      if ($show == 'regular_users')
+      if ($filter == 'regular')
       {
         $permissions = 'użytkownik';
       }
-      else if ($show == 'moderators')
+      else if ($filter == 'moderators')
       {
         $permissions = 'moderator';
       }
-      else if ($show == 'administrators')
+      else if ($filter == 'administrators')
       {
         $permissions = 'administrator';
       }
@@ -69,6 +69,7 @@
         'SELECT
           u.id AS user_id,
           u.login AS user_login,
+          u.email AS user_email,
           u.registration_date AS user_registration_date,
           u.permissions AS user_permissions,
           u.active AS user_active
@@ -84,7 +85,7 @@
         (
           $result[$i]['user_id'],
           $result[$i]['user_login'],
-          null,
+          $result[$i]['user_email'],
           $result[$i]['user_registration_date'],
           $result[$i]['user_permissions'],
           $result[$i]['user_active']
@@ -110,19 +111,19 @@
             exit();
         }
 
-        if ($show == 'all')
+        if ($filter == 'all')
         {
           echo '<h3 class="mb-1-5">Wszyscy użytkownicy</h3>' . PHP_EOL;
         }
-        else if ($show == 'regular_users')
+        else if ($filter == 'regular')
         {
           echo '<h3 class="mb-1-5">Zwykli użytkownicy</h3>' . PHP_EOL;
         }
-        else if ($show == 'moderators')
+        else if ($filter == 'moderators')
         {
           echo '<h3 class="mb-1-5">Moderatorzy</h3>' . PHP_EOL;
         }
-        else if ($show == 'administrators')
+        else if ($filter == 'administrators')
         {
           echo '<h3 class="mb-1-5">Administratorzy</h3>' . PHP_EOL;
         }

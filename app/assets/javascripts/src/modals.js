@@ -1,25 +1,23 @@
 import $ from 'jquery';
-import 'bootstrap/js/dist/modal';
 
-$(document).ready(function()
+function confirmationModal($el)
 {
-  $('.js-confirmation-modal').each(function()
+  const modal = $el.attr('data-target');
+
+  $(modal).on('hide.bs.modal', () =>
   {
-    var parent = $(this);
-    var modal = parent.attr('data-target');
-    $(modal).on('hide.bs.modal', function()
+    if ($(document.activeElement).attr('data-action') != 'accept')
     {
-      if ($(document.activeElement).attr('data-action') != 'accept')
-      {
-        parent.prop('checked', false);
-      }
-    });
-    parent.on('change', function()
-    {
-      if (parent.prop('checked'))
-      {
-        $(modal).modal('show');
-      }
-    });
+      $el.prop('checked', false);
+    }
   });
-});
+  $el.on('change', () =>
+  {
+    if ($el.prop('checked'))
+    {
+      $(modal).modal('show');
+    }
+  });
+}
+
+export { confirmationModal };

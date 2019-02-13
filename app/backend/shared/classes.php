@@ -182,8 +182,8 @@
     private $title;
     private $date;
     private $user_id;
-    private $photos;
     private $author;
+    private $photos;
     private $unverified_photos_count;
 
 		function __construct($id, $title, $date, $user_id)
@@ -192,8 +192,8 @@
       $this->title = sanitize_text($title);
       $this->date = new DateTime($date);
       $this->user_id = $user_id;
-      $this->photos = [];
       $this->author = User::unknown_user();
+      $this->photos = [];
       $this->unverified_photos_count = 0;
 		}
 
@@ -264,6 +264,7 @@
     private $photo_id;
     private $user_id;
     private $author;
+    private $photo;
 
     public function __construct($id, $comment, $date, $verified, $photo_id, $user_id)
     {
@@ -274,6 +275,7 @@
       $this->photo_id = $photo_id;
       $this->user_id = $user_id;
       $this->author = User::unknown_user();
+      $this->photo = null;
     }
 
     public function __get($var)
@@ -336,6 +338,7 @@
     private $date;
     private $verified;
     private $album_id;
+    private $author;
     private $comments;
 
     public function __construct($id, $description, $date, $verified, $album_id)
@@ -345,6 +348,7 @@
       $this->date = new DateTime($date);
       $this->verified = $verified;
       $this->album_id = $album_id;
+      $this->author = User::unknown_user();
       $this->comments = [];
     }
 

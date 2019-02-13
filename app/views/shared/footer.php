@@ -12,9 +12,9 @@
       Zaprojektowane i zaprogramowane z <i class="fas fa-heart text-danger"></i> przez <a class="text-danger underline underline--narrow underline-danger underline-animation" href="https://www.jonaszkadziela.pl/" target="_blank" rel="noreferrer">Jonasza Kądzielę</a>
     </p>
     <?php
-      if (ENVIRONMENT !== 'production')
+      if (RECAPTCHA_ENABLED)
       {
-        echo '<p class="text-muted text-center mb-0">Jonasz Kądziela Klasa 4TA</p>' . PHP_EOL;
+        include VIEWS_PATH . 'shared/recaptcha_notice.php';
       }
     ?>
   </div>

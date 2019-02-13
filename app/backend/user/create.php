@@ -5,6 +5,7 @@
   $email = isset($_POST['email']) ? $_POST['email'] : null;
   $password1 = isset($_POST['password1']) ? $_POST['password1'] : null;
   $password2 = isset($_POST['password2']) ? $_POST['password2'] : null;
+  $recaptcha = isset($_POST['recaptcha']) ? $_POST['recaptcha'] : null;
 
   $_SESSION['create_user_form']['login'] = sanitize_text($login);
   $_SESSION['create_user_form']['email'] = sanitize_text($email);
@@ -71,7 +72,13 @@
 
       if (count($errors) == 0)
       {
-        $password = md5($password1);
+        if (!check_recaptcha($recaptcha))
+        {
+          header('Location: ' . get_referrer_url());
+          exit();
+        }
+
+        $password = password_hash($password1, PASSWORD_DEFAULT);
         $registration_date = (new DateTime())->format('Y-m-d');
         $permissions = 'użytkownik';
         $active = 1;

@@ -12,6 +12,7 @@
     {
       $_SESSION['alert'] = [$_SESSION['alert']];
     }
+    $_SESSION['alert'] = array_unique($_SESSION['alert']);
 
     foreach ($_SESSION['alert'] as $alert)
     {
@@ -33,6 +34,7 @@
     {
       $_SESSION['notice'] = [$_SESSION['notice']];
     }
+    $_SESSION['notice'] = array_unique($_SESSION['notice']);
 
     foreach ($_SESSION['notice'] as $notice)
     {

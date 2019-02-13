@@ -13,9 +13,18 @@
       'host' => '',
       'user' => '',
       'password' => '',
-      'name' => '',
+      'name' => 'bettergram',
       'port' => 3306,
       'socket' => false
+    ],
+    'analytics' =>
+    [
+      'tracking_id' => ''
+    ],
+    'recaptcha' =>
+    [
+      'site_key' => '',
+      'secret_key' => ''
     ]
   ];
 ?>

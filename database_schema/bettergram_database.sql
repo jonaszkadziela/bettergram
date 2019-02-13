@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 02, 2019 at 08:54 PM
+-- Generation Time: Feb 26, 2019 at 09:12 PM
 -- Server version: 10.1.30-MariaDB
 -- PHP Version: 7.2.2
 
@@ -19,10 +19,10 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `kadziela_4ta`
+-- Database: `bettergram`
 --
-CREATE DATABASE IF NOT EXISTS `kadziela_4ta` DEFAULT CHARACTER SET utf8 COLLATE utf8_polish_ci;
-USE `kadziela_4ta`;
+CREATE DATABASE IF NOT EXISTS `bettergram` DEFAULT CHARACTER SET utf8 COLLATE utf8_polish_ci;
+USE `bettergram`;
 
 -- --------------------------------------------------------
 
@@ -88,7 +88,7 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `login` varchar(20) COLLATE utf8_polish_ci NOT NULL,
   `email` varchar(128) COLLATE utf8_polish_ci NOT NULL,
-  `password` varchar(32) COLLATE utf8_polish_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8_polish_ci NOT NULL,
   `registration_date` date NOT NULL,
   `permissions` enum('użytkownik','moderator','administrator') COLLATE utf8_polish_ci NOT NULL,
   `active` tinyint(1) NOT NULL

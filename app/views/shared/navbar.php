@@ -38,8 +38,8 @@
               '<ul class="navbar-nav">' . PHP_EOL .
                 '<li class="nav-item dropdown">' . PHP_EOL .
                   '<a id="user_dropdown" class="nav-link text-capitalize dropdown-toggle border rounded p-0-5" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' . PHP_EOL .
-                    '<i class="fas fa-user-circle mr-0-25"></i>' . PHP_EOL .
-                    '<span>' . (isset($_SESSION['current_user']['login']) ? $_SESSION['current_user']['login'] : 'użytkownik') . '</span>' . PHP_EOL .
+                    '<img class="d-inline-block w-32px h-32px border rounded-circle my--0-5 mr-0-25" src="' . get_gravatar_url($_SESSION['current_user']['email'], 32) . '" alt="#">' . PHP_EOL .
+                    '<span>' . $_SESSION['current_user']['login'] . '</span>' . PHP_EOL .
                   '</a>' . PHP_EOL .
                   '<div class="dropdown-menu dropdown-menu-right" aria-labelledby="user_dropdown">' . PHP_EOL .
                     '<a class="dropdown-item' . ($_SESSION['current_page'] == 'account' ? ' active' : '') . '" href="' . ROOT_URL . '?page=account">Moje konto</a>' . PHP_EOL;

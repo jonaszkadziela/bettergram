@@ -1,19 +1,19 @@
 import $ from 'jquery';
-import Popover from './popover';
 import Validation from './validation';
-import { FieldValidations, disableSubmitButton } from './field_validations';
+import { Popover } from './popover';
+import { FieldValidations, disableSubmit } from './field_validations';
 
-$(document).ready(function()
+$(() =>
 {
-  var form = $('#log_in_user_form');
+  const form = $('#log_in_user_form');
 
   if (form.length)
   {
-    var login = form.find('#login');
-    var password = form.find('#password');
-    var submit = form.find('#submit');
+    const login = form.find('#login');
+    const password = form.find('#password');
+    const submit = form.find('button[type="submit"]');
 
-    var login_validations = new FieldValidations
+    let login_validations = new FieldValidations
     (
       login,
       new Array
@@ -23,8 +23,7 @@ $(document).ready(function()
       ),
       new Popover(login)
     );
-
-    var password_validations = new FieldValidations
+    let password_validations = new FieldValidations
     (
       password,
       new Array
@@ -34,14 +33,14 @@ $(document).ready(function()
       ),
       new Popover(password)
     );
-
-    var validations = [login_validations, password_validations];
+    let validations = [login_validations, password_validations];
 
     validations.forEach(validation =>
     {
-      validation.field.on('keyup change', function()
+      validation.$field.on('keyup change', () =>
       {
-        var disabled = false;
+        let disabled = false;
+
         validations.forEach(validation =>
         {
           if (!validation.passed_validations)
@@ -49,9 +48,9 @@ $(document).ready(function()
             disabled = true;
           }
         });
-        disableSubmitButton(submit, disabled);
+        disableSubmit(submit, disabled);
       });
-      validation.field.trigger('change');
+      validation.$field.trigger('change');
     });
   }
 });

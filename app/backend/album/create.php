@@ -3,6 +3,7 @@
 
   $title = isset($_POST['title']) ? $_POST['title'] : null;
   $user_id = isset($_SESSION['current_user']['id']) ? $_SESSION['current_user']['id'] : null;
+  $recaptcha = isset($_POST['recaptcha']) ? $_POST['recaptcha'] : null;
 
   $_SESSION['create_album_form']['title'] = sanitize_text($title, false);
 
@@ -25,6 +26,12 @@
 
   if (count($errors) == 0)
   {
+    if (!check_recaptcha($recaptcha))
+    {
+      header('Location: ' . get_referrer_url());
+      exit();
+    }
+
     try
     {
       $date = (new DateTime())->format('Y-m-d H:i:s');

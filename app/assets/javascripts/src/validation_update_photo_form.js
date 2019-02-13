@@ -1,24 +1,24 @@
 import $ from 'jquery';
-import Popover from './popover';
 import Validation from './validation';
-import { FieldValidations, disableSubmitButton } from './field_validations';
+import { Popover } from './popover';
+import { FieldValidations, disableSubmit } from './field_validations';
 
-$(document).ready(function()
+$(() =>
 {
-  var form = $('#update_photo_form');
+  const form = $('#update_photo_form');
 
   if (form.length)
   {
-    var description = form.find('#description');
-    var submit = form.find('#submit');
+    const description = form.find('#description');
+    const submit = form.find('button[type="submit"]');
 
-    var description_validations = new FieldValidations
+    let description_validations = new FieldValidations
     (
       description,
       new Array
       (
         new Validation('Opis zdjęcia nie może przekraczać 255 znaków!', /^.{0,255}$/m),
-        new Validation('Opis zdjęcia musi posiadać przynajmniej jeden znak spoza białych znaków!', function()
+        new Validation('Opis zdjęcia musi posiadać przynajmniej jeden znak spoza białych znaków!', () =>
         {
           if (description.val())
           {
@@ -29,14 +29,14 @@ $(document).ready(function()
       ),
       new Popover(description)
     );
-
-    var validations = [description_validations];
+    let validations = [description_validations];
 
     validations.forEach(validation =>
     {
-      validation.field.on('keyup change', function()
+      validation.$field.on('keyup change', () =>
       {
-        var disabled = false;
+        let disabled = false;
+
         validations.forEach(validation =>
         {
           if (!validation.passed_validations)
@@ -44,9 +44,9 @@ $(document).ready(function()
             disabled = true;
           }
         });
-        disableSubmitButton(submit, disabled);
+        disableSubmit(submit, disabled);
       });
-      validation.field.trigger('change');
+      validation.$field.trigger('change');
     });
   }
 });

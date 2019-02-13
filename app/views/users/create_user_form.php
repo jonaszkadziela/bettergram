@@ -55,7 +55,7 @@
     </div>
     <div class="text-center">
       <div class="d-inline-block btn-tooltip btn-tooltip-primary" tabindex="0" data-toggle="tooltip" title="Formularz jest niepoprawnie wypełniony!">
-        <button id="submit" class="btn btn-lg btn-primary" tabindex="-1" type="submit">Zarejestruj</button>
+        <button class="btn btn-lg btn-primary" tabindex="-1" type="submit">Zarejestruj</button>
       </div>
     </div>
   </form>

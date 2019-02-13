@@ -40,8 +40,8 @@
       }
     }
 
-    $photos_link = isset($photos_link) ? $photos_link : ROOT_URL . '?page=photo';
     $photos_class = isset($photos_class) ? $photos_class : 'my-1';
+    $photos_link = isset($photos_link) ? $photos_link : ROOT_URL . '?page=photo';
     $photos_badge_content = isset($photos_badge_content) ? $photos_badge_content : null;
 
     echo '<div class="row justify-content-center">' . PHP_EOL;
@@ -50,25 +50,27 @@
       $photo = $photos[$i];
       echo
         '<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 ' . $photos_class . '">' . PHP_EOL .
-          '<a class="d-block link--clean w-180px m-auto" href="' . $photos_link . '&photo_id=' . $photo->id . '">' . PHP_EOL;
-      if (!is_null($photos_badge_content))
+          '<a class="d-block link--clean w-180px m-auto" href="' . $photos_link . '&photo_id=' . $photo->id . '">' . PHP_EOL .
+            '<div class="rounded">' . PHP_EOL;
+
+      switch ($photos_badge_content)
       {
-        switch ($photos_badge_content)
-        {
-          case 'unverified':
-            if ($photo->verified == 0)
-            {
-              $photo_badge = 'Niezaakceptowane';
-            }
-            else
-            {
-              unset($photo_badge);
-            }
-          break;
-        }
+        case 'unverified':
+          if ($photo->verified == 0)
+          {
+            $photo_badge = 'Niezaakceptowane';
+          }
+          else
+          {
+            unset($photo_badge);
+          }
+        break;
       }
+
       include VIEWS_PATH . 'photos/render_photo_thumbnail.php';
+
       echo
+            '</div>' . PHP_EOL .
           '</a>' . PHP_EOL .
         '</div>' . PHP_EOL;
     }

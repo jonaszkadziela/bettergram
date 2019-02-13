@@ -70,9 +70,14 @@
       $query =
         'SELECT
           a.title AS album_title,
-          a.user_id AS album_user_id
+          a.user_id AS album_user_id,
+          u.login AS user_login,
+          u.email AS user_email
         FROM
           albums AS a
+        JOIN users AS u
+        ON
+          a.user_id = u.id
         WHERE
           a.id = ?';
       $result = $db->prepared_select_query($query, [$album_id]);
@@ -85,6 +90,15 @@
           $result[0]['album_title'],
           null,
           $result[0]['album_user_id']
+        );
+        $album->author = new User
+        (
+          $result[0]['album_user_id'],
+          $result[0]['user_login'],
+          $result[0]['user_email'],
+          null,
+          null,
+          null
         );
       }
       else

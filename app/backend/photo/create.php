@@ -6,6 +6,7 @@
   $photo = isset($_FILES['photo']) ? $_FILES['photo'] : null;
   $album_id = isset($_POST['album_id']) ? $_POST['album_id'] : null;
   $user_id = isset($_SESSION['current_user']['id']) ? $_SESSION['current_user']['id'] : null;
+  $recaptcha = isset($_POST['recaptcha']) ? $_POST['recaptcha'] : null;
 
   $_SESSION['create_photo_form']['description'] = sanitize_text($description);
 
@@ -70,6 +71,12 @@
 
     if (count($errors) == 0)
     {
+      if (!check_recaptcha($recaptcha))
+      {
+        header('Location: ' . get_referrer_url());
+        exit();
+      }
+
       $date = (new DateTime())->format('Y-m-d H:i:s');
       $verified = 0;
 

@@ -1,21 +1,21 @@
 import $ from 'jquery';
-import Popover from './popover';
 import Validation from './validation';
-import { FieldValidations, disableSubmitButton } from './field_validations';
+import { Popover } from './popover';
+import { FieldValidations, disableSubmit } from './field_validations';
 
-$(document).ready(function()
+$(() =>
 {
-  var form = $('#create_user_form');
+  const form = $('#create_user_form');
 
   if (form.length)
   {
-    var login = form.find('#login');
-    var email = form.find('#email');
-    var password1 = form.find('#password1');
-    var password2 = form.find('#password2');
-    var submit = form.find('#submit');
+    const login = form.find('#login');
+    const email = form.find('#email');
+    const password1 = form.find('#password1');
+    const password2 = form.find('#password2');
+    const submit = form.find('button[type="submit"]');
 
-    var login_validations = new FieldValidations
+    let login_validations = new FieldValidations
     (
       login,
       new Array
@@ -25,8 +25,7 @@ $(document).ready(function()
       ),
       new Popover(login)
     );
-
-    var email_validations = new FieldValidations
+    let email_validations = new FieldValidations
     (
       email,
       new Array
@@ -35,8 +34,7 @@ $(document).ready(function()
       ),
       new Popover(email)
     );
-
-    var password1_validations = new FieldValidations
+    let password1_validations = new FieldValidations
     (
       password1,
       new Array
@@ -46,15 +44,14 @@ $(document).ready(function()
       ),
       new Popover(password1)
     );
-
-    var password2_validations = new FieldValidations
+    let password2_validations = new FieldValidations
     (
       password2,
       new Array
       (
         new Validation('Hasło musi posiadać od 6 do 20 znaków!', /^.{6,20}$/m),
         new Validation('Hasło musi zawierać przynajmniej 1 dużą literę, 1 małą literę i 1 cyfrę!', /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9!@#$%^&*]{6,20}$/m),
-        new Validation('Podane hasła nie są identyczne!', function()
+        new Validation('Podane hasła nie są identyczne!', () =>
         {
           if (password1.val() != password2.val())
           {
@@ -65,14 +62,14 @@ $(document).ready(function()
       ),
       new Popover(password2)
     );
-
-    var validations = [login_validations, email_validations, password1_validations, password2_validations];
+    let validations = [login_validations, email_validations, password1_validations, password2_validations];
 
     validations.forEach(validation =>
     {
-      validation.field.on('keyup change', function()
+      validation.$field.on('keyup change', () =>
       {
-        var disabled = false;
+        let disabled = false;
+
         validations.forEach(validation =>
         {
           if (!validation.passed_validations)
@@ -80,9 +77,9 @@ $(document).ready(function()
             disabled = true;
           }
         });
-        disableSubmitButton(submit, disabled);
+        disableSubmit(submit, disabled);
       });
-      validation.field.trigger('change');
+      validation.$field.trigger('change');
     });
   }
 });

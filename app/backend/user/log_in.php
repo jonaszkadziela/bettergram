@@ -3,10 +3,17 @@
 
   $login = isset($_POST['login']) ? $_POST['login'] : null;
   $password = isset($_POST['password']) ? $_POST['password'] : null;
+  $recaptcha = isset($_POST['recaptcha']) ? $_POST['recaptcha'] : null;
 
   $_SESSION['log_in_user_form']['login'] = sanitize_text($login);
 
   if (!validate_request('post', [$login, $password]))
+  {
+    header('Location: ' . get_referrer_url());
+    exit();
+  }
+
+  if (!check_recaptcha($recaptcha))
   {
     header('Location: ' . get_referrer_url());
     exit();
@@ -27,7 +34,7 @@
       {
         $errors[] = 'Konto jest nieaktywne!';
       }
-      else if (md5($password) == $result[0]['password'])
+      else if (password_verify($password, $result[0]['password']))
       {
         $_SESSION['current_user']['id'] = $result[0]['id'];
         $_SESSION['current_user']['login'] = $result[0]['login'];

@@ -5,6 +5,8 @@
     header('Location: ' . ROOT_URL . '?error=405');
     exit();
   }
+  // Redirect user to the following URL after logging in
+  $_SESSION['redirect_url'] = ROOT_URL . '?page=gallery';
 ?>
 <div id="log_in_user_form" class="text-center">
   <h2 class="underline underline-primary mb-1-5">Zaloguj się</h2>

@@ -6,7 +6,7 @@
     exit();
   }
   // Redirect user to the following URL after creating a new account
-  $_SESSION['redirect_url'] = ROOT_URL . '?page=welcome';
+  $_SESSION['redirect_url'] = ROOT_URL . '?page=welcome&redirect=1';
 ?>
 <div id="create_user_form" class="text-center">
   <h2 class="underline underline-primary mb-1-5">Zarejestruj się</h2>

@@ -19,8 +19,6 @@
         <div class="card p-1 shadow-lg">
           <div class="card-body text-center">
             <?php
-              // Redirect user to the following URL after logging in
-              $_SESSION['redirect_url'] = ROOT_URL . '?page=gallery';
               include VIEWS_PATH . 'users/log_in_user_form.php';
             ?>
             <div class="mt-1-5 pt-0-5">

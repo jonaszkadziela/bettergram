@@ -35,7 +35,7 @@
     "@babel/runtime": "^7.5.5",
     "bootstrap": "^4.3.1",
     "ganalytics": "^3.1.2",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "lg-fullscreen": "^1.1.0",
     "lg-zoom": "^1.1.0",
     "lightgallery": "^1.6.12",
